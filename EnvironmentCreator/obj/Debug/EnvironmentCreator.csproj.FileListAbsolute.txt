@@ -1,0 +1,5 @@
+c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\EnvironmentCreator.dll
+c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\EnvironmentCreator.pdb
+c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.csprojResolveAssemblyReference.cache
+c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.dll
+c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.pdb
