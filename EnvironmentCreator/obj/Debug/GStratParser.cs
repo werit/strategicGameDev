@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\Gammars\GStrat.g4 by ANTLR 4.2.2-SNAPSHOT
+// Generated from C:\ANTLR\Grammars\GStrat.g4 by ANTLR 4.2.2-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162

@@ -45,15 +45,26 @@
   <ItemGroup>
     <Compile Include="Car.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Gammars\CalculatorVisitor.cs" />
     <Compile Include="IGramChoice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Antlr4 Include="..\..\..\..\..\..\..\ANTLR\Grammars\Calculator.g4">
+      <Link>Gammars\Calculator.g4</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>EnvironmentCreator.Gammars</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="..\..\..\..\..\..\..\ANTLR\Grammars\GStrat.g4">
+      <Link>Gammars\GStrat.g4</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>EnvironmentCreator.Gammars</CustomToolNamespace>
+    </Antlr4>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Gammars\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

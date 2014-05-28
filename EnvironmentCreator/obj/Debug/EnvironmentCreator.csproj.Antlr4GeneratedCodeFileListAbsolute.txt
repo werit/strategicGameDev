@@ -1,9 +1,3 @@
-c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\EnvironmentCreator.dll
-c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\EnvironmentCreator.pdb
-c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.dll
-c:\users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.pdb
-C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\Antlr4.Runtime.v4.5.dll
-C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\Antlr4.Runtime.v4.5.xml
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\GStratLexer.cs
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\GStratParser.cs
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\GStratListener.cs
@@ -16,4 +10,3 @@ C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\Environmen
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorBaseListener.cs
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorVisitor.cs
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorBaseVisitor.cs
-C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.csproj.Antlr4GeneratedCodeFileListAbsolute.txt
