@@ -1,0 +1,8 @@
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.exe.config
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.exe
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.pdb
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.exe
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.pdb
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\EnvironmentCreator.dll
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\EnvironmentCreator.pdb
+C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.csprojResolveAssemblyReference.cache

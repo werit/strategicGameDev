@@ -9,13 +9,13 @@ namespace EnvironmentCreator
     /** @brief Interface generating basic methods implemented by all factory created classes.
      * 
      **/
-    interface IGramChoice
+    public interface IGramChoice
     {
         /** @brief Test method for usage of interface.
          * 
          **/
-        
-        public String Buy();
+
+        String Buy();
 
     }
 }

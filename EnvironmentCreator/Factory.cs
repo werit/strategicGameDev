@@ -23,6 +23,5 @@ namespace EnvironmentCreator
         {
             Console.Out.WriteLine("Hello");
         }
-        public 
     }
 }

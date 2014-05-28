@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator
 {
-    class Car :IGramChoice
+    public class Car :IGramChoice
     {
-        override public String Buy()
+        public String Buy()
         {
             return "bought a car";
         }

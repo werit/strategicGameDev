@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\Gammars\StratGame.g4 by ANTLR 4.2.2-SNAPSHOT
+// Generated from C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\Gammars\StratGame.g4 by ANTLR 4.2.2-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162
