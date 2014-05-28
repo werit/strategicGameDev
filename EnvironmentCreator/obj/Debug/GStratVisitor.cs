@@ -18,6 +18,7 @@
 #pragma warning disable 1591
 
 namespace EnvironmentCreator.Gammars {
+#pragma warning disable 3021
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
