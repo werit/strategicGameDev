@@ -14,6 +14,7 @@ namespace DebugDll
             Factory fctr = new Factory();
             IGramChoice choice = Factory.getChoiceObj("car");
             Console.WriteLine(choice.Buy());
+            fctr.ParsGramm();
         }
     }
 }

@@ -1,0 +1,32 @@
+Examples:
+   type Soldier {
+     number health;
+     number damage;
+   }
+   type SoldierWithJetPack extends Soldier {
+     boolean flying;
+   }
+ 
+   instance Rambo1, Rambo2;
+ 
+   action Init(){
+     pre:{}
+     effs{
+     Rambo1.flying = false;
+     Rambo1.health = 100;
+     Rambo1.damage = 6;
+     Rambo2.flying = false;
+     Rambo2.health = 100;
+     Rambo2.damage = 8;
+     }
+     effe{}
+   }
+ 
+   action Shoot(Soldier shooter, Soldier target){
+     duration = 10;
+     pre:{ close_range(shooter, target),
+           target.flying == false
+         }
+     effs:{}
+     effe:{ target.health -= shooter.damage }
+   }

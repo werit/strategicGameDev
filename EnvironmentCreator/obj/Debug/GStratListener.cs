@@ -31,48 +31,15 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IGStratListener : IParseTreeListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.expression"/>.
+	/// Enter a parse tree produced by <see cref="GStratParser.CallFn"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterExpression([NotNull] GStratParser.ExpressionContext context);
+	void EnterCallFn([NotNull] GStratParser.CallFnContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.expression"/>.
+	/// Exit a parse tree produced by <see cref="GStratParser.CallFn"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitExpression([NotNull] GStratParser.ExpressionContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.functionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFunctionCall([NotNull] GStratParser.FunctionCallContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.functionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFunctionCall([NotNull] GStratParser.FunctionCallContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.precondition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterPrecondition([NotNull] GStratParser.PreconditionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.precondition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitPrecondition([NotNull] GStratParser.PreconditionContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.effect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterEffect([NotNull] GStratParser.EffectContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.effect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitEffect([NotNull] GStratParser.EffectContext context);
+	void ExitCallFn([NotNull] GStratParser.CallFnContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.root"/>.
@@ -86,26 +53,48 @@ public interface IGStratListener : IParseTreeListener {
 	void ExitRoot([NotNull] GStratParser.RootContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.action"/>.
+	/// Enter a parse tree produced by <see cref="GStratParser.@int"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterAction([NotNull] GStratParser.ActionContext context);
+	void EnterInt([NotNull] GStratParser.IntContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.action"/>.
+	/// Exit a parse tree produced by <see cref="GStratParser.@int"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitAction([NotNull] GStratParser.ActionContext context);
+	void ExitInt([NotNull] GStratParser.IntContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.instance"/>.
+	/// Enter a parse tree produced by <see cref="GStratParser.PrecondExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterInstance([NotNull] GStratParser.InstanceContext context);
+	void EnterPrecondExpr([NotNull] GStratParser.PrecondExprContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.instance"/>.
+	/// Exit a parse tree produced by <see cref="GStratParser.PrecondExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitInstance([NotNull] GStratParser.InstanceContext context);
+	void ExitPrecondExpr([NotNull] GStratParser.PrecondExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddSub([NotNull] GStratParser.AddSubContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddSub([NotNull] GStratParser.AddSubContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.parenth"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParenth([NotNull] GStratParser.ParenthContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.parenth"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParenth([NotNull] GStratParser.ParenthContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.type"/>.
@@ -117,6 +106,72 @@ public interface IGStratListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitType([NotNull] GStratParser.TypeContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionCall([NotNull] GStratParser.FunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionCall([NotNull] GStratParser.FunctionCallContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.effect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEffect([NotNull] GStratParser.EffectContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.effect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEffect([NotNull] GStratParser.EffectContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.ident"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdent([NotNull] GStratParser.IdentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.ident"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdent([NotNull] GStratParser.IdentContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAction([NotNull] GStratParser.ActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAction([NotNull] GStratParser.ActionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.MulDivMod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMulDivMod([NotNull] GStratParser.MulDivModContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.MulDivMod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMulDivMod([NotNull] GStratParser.MulDivModContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.instance"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInstance([NotNull] GStratParser.InstanceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.instance"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInstance([NotNull] GStratParser.InstanceContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.variable"/>.
