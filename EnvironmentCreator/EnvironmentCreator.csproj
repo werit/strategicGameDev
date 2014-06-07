@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,13 +50,12 @@
     <Compile Include="Factory.cs" />
     <Compile Include="GameStatData.cs" />
     <Compile Include="Gammars\CalculatorVisitor.cs" />
-    <Compile Include="Gammars\GStrat_VIS_bool.cs" />
     <Compile Include="Gammars\GStrat_VIS_int.cs" />
     <Compile Include="Gammars\GStrat_VIS_string.cs" />
+    <Compile Include="Gammars\tmpListener.cs" />
     <Compile Include="GrammarInpStorage.cs" />
     <Compile Include="GroundingParams.cs" />
     <Compile Include="IGramChoice.cs" />
-    <Compile Include="PreconditionVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

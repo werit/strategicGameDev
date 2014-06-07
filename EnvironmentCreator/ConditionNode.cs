@@ -19,7 +19,6 @@ namespace EnvironmentCreator
         {
             throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
         }
-        //public virtual void accept(PreconditionVisitor vis);
     }
     public class IntNode : ConditionNode
     {
@@ -36,10 +35,11 @@ namespace EnvironmentCreator
         {
             this.m_value = value;
         }
-        /*public override void accept(PreconditionVisitor vis)
+        public IntNode() { }
+        public IntNode(int value)
         {
-            vis.Visit(this);
-        }*/
+            m_value = value;
+        }
 
     }
     public abstract class BinaryOp : ConditionNode
@@ -148,6 +148,10 @@ namespace EnvironmentCreator
         {
             this.m_id = id;
         }
+        public IDNode() { }
+        public IDNode(string id){
+            this.m_id = id;
+        }
     }
     public abstract class BinaryCompareOp : BinaryOp
     {
@@ -184,7 +188,7 @@ namespace EnvironmentCreator
 
         }
     }
-    public class ENotqualNode : BinaryCompareOp
+    public class NotEqualNode : BinaryCompareOp
     {
         public override void evalNode(out bool returnVal)
         {

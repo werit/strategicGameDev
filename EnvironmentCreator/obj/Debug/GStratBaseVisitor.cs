@@ -67,6 +67,17 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitInt([NotNull] GStratParser.IntContext context) { return VisitChildren(context); }
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAddSub([NotNull] GStratParser.AddSubContext context) { return VisitChildren(context); }
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.PrecondExpr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -78,7 +89,7 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitPrecondExpr([NotNull] GStratParser.PrecondExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// Visit a parse tree produced by <see cref="GStratParser.CallFnPrecond"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -86,7 +97,7 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAddSub([NotNull] GStratParser.AddSubContext context) { return VisitChildren(context); }
+	public virtual Result VisitCallFnPrecond([NotNull] GStratParser.CallFnPrecondContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.parenth"/>.
@@ -100,17 +111,6 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitParenth([NotNull] GStratParser.ParenthContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.type"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitType([NotNull] GStratParser.TypeContext context) { return VisitChildren(context); }
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.functionCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -122,7 +122,7 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitFunctionCall([NotNull] GStratParser.FunctionCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.effect"/>.
+	/// Visit a parse tree produced by <see cref="GStratParser.NewType"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -130,7 +130,18 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEffect([NotNull] GStratParser.EffectContext context) { return VisitChildren(context); }
+	public virtual Result VisitNewType([NotNull] GStratParser.NewTypeContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GStratParser.AssignExpr"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAssignExpr([NotNull] GStratParser.AssignExprContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.ident"/>.
@@ -177,7 +188,7 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	public virtual Result VisitInstance([NotNull] GStratParser.InstanceContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.variable"/>.
+	/// Visit a parse tree produced by <see cref="GStratParser.NewVariable"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -185,6 +196,6 @@ public partial class GStratBaseVisitor<Result> : AbstractParseTreeVisitor<Result
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariable([NotNull] GStratParser.VariableContext context) { return VisitChildren(context); }
+	public virtual Result VisitNewVariable([NotNull] GStratParser.NewVariableContext context) { return VisitChildren(context); }
 }
 } // namespace EnvironmentCreator.Gammars

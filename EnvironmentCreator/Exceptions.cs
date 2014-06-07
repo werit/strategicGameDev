@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using EnvironmentCreator.Gammars;
 
 namespace EnvironmentCreator
 {
@@ -35,6 +36,13 @@ namespace EnvironmentCreator
                 Console.Error.Write(" '{0}' '{1}'",methodBs.GetParameters()[i].GetType().Name.ToString(),methodBs.GetParameters()[i].Name.ToString());
             }
             Console.Error.WriteLine(" is not supported.");
+        }
+    }
+    public class UnexpectedParserToken : SystemException
+    {
+        public UnexpectedParserToken(string where)
+        {
+            Console.Error.WriteLine("Found unexpected token in '{0}'",where);
         }
     }
 }

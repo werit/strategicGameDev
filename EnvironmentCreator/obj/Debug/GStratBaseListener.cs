@@ -74,6 +74,19 @@ public partial class GStratBaseListener : IGStratListener {
 	public virtual void ExitInt([NotNull] GStratParser.IntContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAddSub([NotNull] GStratParser.AddSubContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAddSub([NotNull] GStratParser.AddSubContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.PrecondExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -87,17 +100,17 @@ public partial class GStratBaseListener : IGStratListener {
 	public virtual void ExitPrecondExpr([NotNull] GStratParser.PrecondExprContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// Enter a parse tree produced by <see cref="GStratParser.CallFnPrecond"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAddSub([NotNull] GStratParser.AddSubContext context) { }
+	public virtual void EnterCallFnPrecond([NotNull] GStratParser.CallFnPrecondContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.AddSub"/>.
+	/// Exit a parse tree produced by <see cref="GStratParser.CallFnPrecond"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAddSub([NotNull] GStratParser.AddSubContext context) { }
+	public virtual void ExitCallFnPrecond([NotNull] GStratParser.CallFnPrecondContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.parenth"/>.
@@ -113,19 +126,6 @@ public partial class GStratBaseListener : IGStratListener {
 	public virtual void ExitParenth([NotNull] GStratParser.ParenthContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.type"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterType([NotNull] GStratParser.TypeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.type"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitType([NotNull] GStratParser.TypeContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.functionCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -139,17 +139,30 @@ public partial class GStratBaseListener : IGStratListener {
 	public virtual void ExitFunctionCall([NotNull] GStratParser.FunctionCallContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.effect"/>.
+	/// Enter a parse tree produced by <see cref="GStratParser.NewType"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEffect([NotNull] GStratParser.EffectContext context) { }
+	public virtual void EnterNewType([NotNull] GStratParser.NewTypeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.effect"/>.
+	/// Exit a parse tree produced by <see cref="GStratParser.NewType"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEffect([NotNull] GStratParser.EffectContext context) { }
+	public virtual void ExitNewType([NotNull] GStratParser.NewTypeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GStratParser.AssignExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAssignExpr([NotNull] GStratParser.AssignExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GStratParser.AssignExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAssignExpr([NotNull] GStratParser.AssignExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GStratParser.ident"/>.
@@ -204,17 +217,17 @@ public partial class GStratBaseListener : IGStratListener {
 	public virtual void ExitInstance([NotNull] GStratParser.InstanceContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GStratParser.variable"/>.
+	/// Enter a parse tree produced by <see cref="GStratParser.NewVariable"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterVariable([NotNull] GStratParser.VariableContext context) { }
+	public virtual void EnterNewVariable([NotNull] GStratParser.NewVariableContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GStratParser.variable"/>.
+	/// Exit a parse tree produced by <see cref="GStratParser.NewVariable"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitVariable([NotNull] GStratParser.VariableContext context) { }
+	public virtual void ExitNewVariable([NotNull] GStratParser.NewVariableContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

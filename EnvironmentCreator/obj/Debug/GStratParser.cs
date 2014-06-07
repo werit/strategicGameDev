@@ -174,6 +174,18 @@ public partial class GStratParser : Parser {
 	}
 
 	public partial class TypeContext : ParserRuleContext {
+		public TypeContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int GetRuleIndex() { return RULE_type; }
+	 
+		public TypeContext() { }
+		public virtual void CopyFrom(TypeContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class NewTypeContext : TypeContext {
 		public IReadOnlyList<ITerminalNode> ID() { return GetTokens(GStratParser.ID); }
 		public IReadOnlyList<VariableContext> variable() {
 			return GetRuleContexts<VariableContext>();
@@ -184,22 +196,18 @@ public partial class GStratParser : Parser {
 		public ITerminalNode ID(int i) {
 			return GetToken(GStratParser.ID, i);
 		}
-		public TypeContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int GetRuleIndex() { return RULE_type; }
+		public NewTypeContext(TypeContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.EnterType(this);
+			if (typedListener != null) typedListener.EnterNewType(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.ExitType(this);
+			if (typedListener != null) typedListener.ExitNewType(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitType(this);
+			if (typedVisitor != null) return typedVisitor.VisitNewType(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -210,6 +218,7 @@ public partial class GStratParser : Parser {
 		EnterRule(_localctx, 2, RULE_type);
 		int _la;
 		try {
+			_localctx = new NewTypeContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 32; Match(14);
@@ -261,24 +270,32 @@ public partial class GStratParser : Parser {
 	}
 
 	public partial class VariableContext : ParserRuleContext {
-		public IToken opt;
-		public ITerminalNode ID() { return GetToken(GStratParser.ID, 0); }
 		public VariableContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int GetRuleIndex() { return RULE_variable; }
+	 
+		public VariableContext() { }
+		public virtual void CopyFrom(VariableContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class NewVariableContext : VariableContext {
+		public IToken opt;
+		public ITerminalNode ID() { return GetToken(GStratParser.ID, 0); }
+		public NewVariableContext(VariableContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.EnterVariable(this);
+			if (typedListener != null) typedListener.EnterNewVariable(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.ExitVariable(this);
+			if (typedListener != null) typedListener.ExitNewVariable(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVariable(this);
+			if (typedVisitor != null) return typedVisitor.VisitNewVariable(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -289,13 +306,14 @@ public partial class GStratParser : Parser {
 		EnterRule(_localctx, 4, RULE_variable);
 		int _la;
 		try {
+			_localctx = new NewVariableContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 51;
-			_localctx.opt = _input.Lt(1);
+			((NewVariableContext)_localctx).opt = _input.Lt(1);
 			_la = _input.La(1);
 			if ( !(_la==BOOL_ID || _la==NUMBER_ID) ) {
-				_localctx.opt = _errHandler.RecoverInline(this);
+				((NewVariableContext)_localctx).opt = _errHandler.RecoverInline(this);
 			}
 			Consume();
 			State = 52; Match(ID);
@@ -521,25 +539,6 @@ public partial class GStratParser : Parser {
 			base.CopyFrom(context);
 		}
 	}
-	public partial class CallFnContext : PreconditionContext {
-		public FunctionCallContext functionCall() {
-			return GetRuleContext<FunctionCallContext>(0);
-		}
-		public CallFnContext(PreconditionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.EnterCallFn(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.ExitCallFn(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCallFn(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
 	public partial class PrecondExprContext : PreconditionContext {
 		public IToken op;
 		public ITerminalNode ID() { return GetToken(GStratParser.ID, 0); }
@@ -558,6 +557,25 @@ public partial class GStratParser : Parser {
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPrecondExpr(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class CallFnPrecondContext : PreconditionContext {
+		public FunctionCallContext functionCall() {
+			return GetRuleContext<FunctionCallContext>(0);
+		}
+		public CallFnPrecondContext(PreconditionContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IGStratListener typedListener = listener as IGStratListener;
+			if (typedListener != null) typedListener.EnterCallFnPrecond(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IGStratListener typedListener = listener as IGStratListener;
+			if (typedListener != null) typedListener.ExitCallFnPrecond(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCallFnPrecond(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -587,7 +605,7 @@ public partial class GStratParser : Parser {
 				break;
 
 			case 2:
-				_localctx = new CallFnContext(_localctx);
+				_localctx = new CallFnPrecondContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 113; functionCall();
@@ -699,30 +717,54 @@ public partial class GStratParser : Parser {
 	}
 
 	public partial class EffectContext : ParserRuleContext {
-		public FunctionCallContext functionCall() {
-			return GetRuleContext<FunctionCallContext>(0);
-		}
-		public ITerminalNode OPERATOR_ASSIGN() { return GetToken(GStratParser.OPERATOR_ASSIGN, 0); }
-		public ITerminalNode ID() { return GetToken(GStratParser.ID, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
 		public EffectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int GetRuleIndex() { return RULE_effect; }
+	 
+		public EffectContext() { }
+		public virtual void CopyFrom(EffectContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class CallFnContext : EffectContext {
+		public FunctionCallContext functionCall() {
+			return GetRuleContext<FunctionCallContext>(0);
+		}
+		public CallFnContext(EffectContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.EnterEffect(this);
+			if (typedListener != null) typedListener.EnterCallFn(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IGStratListener typedListener = listener as IGStratListener;
-			if (typedListener != null) typedListener.ExitEffect(this);
+			if (typedListener != null) typedListener.ExitCallFn(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitEffect(this);
+			if (typedVisitor != null) return typedVisitor.VisitCallFn(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class AssignExprContext : EffectContext {
+		public ITerminalNode OPERATOR_ASSIGN() { return GetToken(GStratParser.OPERATOR_ASSIGN, 0); }
+		public ITerminalNode ID() { return GetToken(GStratParser.ID, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public AssignExprContext(EffectContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IGStratListener typedListener = listener as IGStratListener;
+			if (typedListener != null) typedListener.EnterAssignExpr(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IGStratListener typedListener = listener as IGStratListener;
+			if (typedListener != null) typedListener.ExitAssignExpr(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IGStratVisitor<TResult> typedVisitor = visitor as IGStratVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAssignExpr(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -735,6 +777,7 @@ public partial class GStratParser : Parser {
 			State = 137;
 			switch ( Interpreter.AdaptivePredict(_input,15,_ctx) ) {
 			case 1:
+				_localctx = new AssignExprContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 131; Match(ID);
@@ -745,6 +788,7 @@ public partial class GStratParser : Parser {
 				break;
 
 			case 2:
+				_localctx = new CallFnContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 136; functionCall();

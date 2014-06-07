@@ -21,6 +21,7 @@ namespace EnvironmentCreator.Gammars
         }
         public override int VisitAddSub(CalculatorParser.AddSubContext context)
         {
+            System.Console.Out.WriteLine("Som v VisitAddSub vo Visitore"); 
             int left = Visit(context.expr(0));
             int right = Visit(context.expr(1));
             if (context.op.Type == CalculatorParser.ADD)
