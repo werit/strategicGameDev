@@ -11,6 +11,20 @@ namespace EnvironmentCreator
     public abstract class ConditionNode
     {
         public abstract GameStatData.NodeReturnType ReturnType();
+        public bool isReturnTypeOfBothBool(ConditionNode node1, ConditionNode node2)
+        {
+            return (node1.ReturnType() == GameStatData.NodeReturnType.BOOL || node1.ReturnType() == GameStatData.NodeReturnType.INT_BOOL) && isReturnTypeSame(node1, node2);
+        }
+        public bool isReturnTypeOfBothInt(ConditionNode node1, ConditionNode node2)
+        {
+            return (node1.ReturnType() == GameStatData.NodeReturnType.INT || node1.ReturnType() == GameStatData.NodeReturnType.INT_BOOL) && isReturnTypeSame(node1, node2);
+        }
+        public bool isReturnTypeSame(ConditionNode node1, ConditionNode node2)
+        {
+            return node1.ReturnType() == node2.ReturnType() ||
+                ((node1.ReturnType() == GameStatData.NodeReturnType.INT_BOOL && (node2.ReturnType() == GameStatData.NodeReturnType.INT || node2.ReturnType() == GameStatData.NodeReturnType.BOOL)) ||
+                (node2.ReturnType() == GameStatData.NodeReturnType.INT_BOOL && (node1.ReturnType() == GameStatData.NodeReturnType.INT || node1.ReturnType() == GameStatData.NodeReturnType.BOOL)));
+        }
         public virtual void evalNode(out bool returnVal)
         {
             throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
@@ -65,7 +79,7 @@ namespace EnvironmentCreator
         public override void evalNode(out int returnVal)
         {
             Debug.Assert(m_lNode != null && m_rNode != null &&
-                m_lNode.ReturnType() == GameStatData.NodeReturnType.INT && m_rNode.ReturnType() == GameStatData.NodeReturnType.INT);
+                isReturnTypeOfBothInt(m_lNode, m_rNode));
             int lRetVal;
             int rRetVal;
             m_lNode.evalNode(out lRetVal);
@@ -79,7 +93,7 @@ namespace EnvironmentCreator
         public override void evalNode(out int returnVal)
         {
             Debug.Assert(m_lNode != null && m_rNode != null &&
-                m_lNode.ReturnType() == GameStatData.NodeReturnType.INT && m_rNode.ReturnType() == GameStatData.NodeReturnType.INT);
+                isReturnTypeOfBothInt(m_lNode, m_rNode));
             int lRetVal;
             int rRetVal;
             m_lNode.evalNode(out lRetVal);
@@ -93,7 +107,7 @@ namespace EnvironmentCreator
         public override void evalNode(out int returnVal)
         {
             Debug.Assert(m_lNode != null && m_rNode != null &&
-                m_lNode.ReturnType() == GameStatData.NodeReturnType.INT && m_rNode.ReturnType() == GameStatData.NodeReturnType.INT);
+                isReturnTypeOfBothInt(m_lNode, m_rNode));
             int lRetVal;
             int rRetVal;
             m_lNode.evalNode(out lRetVal);
@@ -106,7 +120,7 @@ namespace EnvironmentCreator
         public override void evalNode(out int returnVal)
         {
             Debug.Assert(m_lNode != null && m_rNode != null &&
-                m_lNode.ReturnType() == GameStatData.NodeReturnType.INT && m_rNode.ReturnType() == GameStatData.NodeReturnType.INT);
+                isReturnTypeOfBothInt(m_lNode, m_rNode));
             int lRetVal;
             int rRetVal;
             m_lNode.evalNode(out lRetVal);
@@ -119,7 +133,7 @@ namespace EnvironmentCreator
         public override void evalNode(out int returnVal)
         {
             Debug.Assert(m_lNode != null && m_rNode != null &&
-                m_lNode.ReturnType() == GameStatData.NodeReturnType.INT && m_rNode.ReturnType() == GameStatData.NodeReturnType.INT);
+                isReturnTypeOfBothInt(m_lNode,m_rNode));
             int lRetVal;
             int rRetVal;
             m_lNode.evalNode(out lRetVal);
@@ -132,16 +146,16 @@ namespace EnvironmentCreator
         protected string m_id;
         public override GameStatData.NodeReturnType ReturnType()
         {
-
-            int outparam;
-            if (GroundingParams.m_InstanceIntegerVar.TryGetValue(m_id, out outparam))
-                return GameStatData.NodeReturnType.INT;
+            if (GroundingParams.m_InstanceBoolVar.ContainsKey(m_id) && GroundingParams.m_InstanceIntegerVar.ContainsKey(m_id))
+                return GameStatData.NodeReturnType.INT_BOOL;
             else
-            {
-                bool outParamBool;
-                if (GroundingParams.m_InstanceBoolVar.TryGetValue(m_id, out outParamBool))
-                    return GameStatData.NodeReturnType.BOOL;
-            }
+                if (GroundingParams.m_InstanceIntegerVar.ContainsKey(m_id))
+                    return GameStatData.NodeReturnType.INT;
+                else
+                {
+                    if (GroundingParams.m_InstanceBoolVar.ContainsKey(m_id))
+                        return GameStatData.NodeReturnType.BOOL;
+                }
             throw new UnknownParameterExc(m_id);
         }
         public void SetId(string id)
@@ -151,6 +165,10 @@ namespace EnvironmentCreator
         public IDNode() { }
         public IDNode(string id){
             this.m_id = id;
+        }
+        public override string ToString()
+        {
+            return this.m_id;
         }
     }
     public abstract class BinaryCompareOp : BinaryOp
@@ -164,23 +182,40 @@ namespace EnvironmentCreator
     {
         public override void evalNode(out bool returnVal)
         {
-            if (m_lNode.ReturnType() != m_rNode.ReturnType())
+            if (!isReturnTypeSame(m_lNode,m_rNode))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(), m_lNode.ReturnType(), GameStatData.BoolOperators.EQUAL);
+            bool lRetVal;
+            bool rRetVal;
+            int lRetVal_int;
+            int rRetVal_int;
             switch (m_lNode.ReturnType())
             {
                 case GameStatData.NodeReturnType.BOOL:
-                    bool lRetVal;
-                    bool rRetVal;
                     m_lNode.evalNode(out lRetVal);
                     m_rNode.evalNode(out rRetVal);
                     returnVal = lRetVal == rRetVal;
                     break;
                 case GameStatData.NodeReturnType.INT:
-                    int lRetVal_int;
-                    int rRetVal_int;
                     m_lNode.evalNode(out lRetVal_int);
                     m_rNode.evalNode(out rRetVal_int);
                     returnVal = lRetVal_int == rRetVal_int;
+                    break;
+                case GameStatData.NodeReturnType.INT_BOOL:
+                    if (m_rNode.ReturnType() == GameStatData.NodeReturnType.INT)
+                    {
+                        m_lNode.evalNode(out lRetVal_int);
+                        m_rNode.evalNode(out rRetVal_int);
+                        returnVal = lRetVal_int == rRetVal_int;
+                    }
+                    else
+                        if (m_rNode.ReturnType() == GameStatData.NodeReturnType.BOOL)
+                        {
+                            m_lNode.evalNode(out lRetVal);
+                            m_rNode.evalNode(out rRetVal);
+                            returnVal = lRetVal == rRetVal;
+                        }
+                        else
+                            throw new CannotChooseVariableTypeExc(m_lNode.ToString());
                     break;
                 default:
                     throw new UnxpectedParamTypeExc(m_lNode.ReturnType(), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.EQUAL);
@@ -192,23 +227,40 @@ namespace EnvironmentCreator
     {
         public override void evalNode(out bool returnVal)
         {
-            if (m_lNode.ReturnType() != m_rNode.ReturnType())
+            if (!isReturnTypeSame(m_lNode, m_rNode))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(), m_lNode.ReturnType(),  GameStatData.BoolOperators.NOT_EQUAL);
+            bool lRetVal;
+            bool rRetVal;
+            int lRetVal_int;
+            int rRetVal_int;
             switch (m_lNode.ReturnType())
             {
                 case GameStatData.NodeReturnType.BOOL:
-                    bool lRetVal;
-                    bool rRetVal;
                     m_lNode.evalNode(out lRetVal);
                     m_rNode.evalNode(out rRetVal);
                     returnVal = lRetVal != rRetVal;
                     break;
                 case GameStatData.NodeReturnType.INT:
-                    int lRetVal_int;
-                    int rRetVal_int;
                     m_lNode.evalNode(out lRetVal_int);
                     m_rNode.evalNode(out rRetVal_int);
                     returnVal = lRetVal_int != rRetVal_int;
+                    break;
+                case GameStatData.NodeReturnType.INT_BOOL:
+                    if (m_rNode.ReturnType() == GameStatData.NodeReturnType.INT)
+                    {
+                        m_lNode.evalNode(out lRetVal_int);
+                        m_rNode.evalNode(out rRetVal_int);
+                        returnVal = lRetVal_int != rRetVal_int;
+                    }
+                    else
+                        if (m_rNode.ReturnType() == GameStatData.NodeReturnType.BOOL)
+                        {
+                            m_lNode.evalNode(out lRetVal);
+                            m_rNode.evalNode(out rRetVal);
+                            returnVal = lRetVal != rRetVal;
+                        }
+                        else
+                            throw new CannotChooseVariableTypeExc(m_lNode.ToString());
                     break;
                 default:
                     throw new UnxpectedParamTypeExc(m_lNode.ReturnType(), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.NOT_EQUAL);
@@ -220,41 +272,26 @@ namespace EnvironmentCreator
     {
         public override void evalNode(out bool returnVal)
         {
-            if (m_lNode.ReturnType() != m_rNode.ReturnType())
+            if (!isReturnTypeOfBothInt(m_lNode, m_rNode))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(), m_lNode.ReturnType(), GameStatData.BoolOperators.LESS_THEN);
-            switch (m_lNode.ReturnType())
-            {
-                case GameStatData.NodeReturnType.INT:
-                    int lRetVal_int;
-                    int rRetVal_int;
-                    m_lNode.evalNode(out lRetVal_int);
-                    m_rNode.evalNode(out rRetVal_int);
-                    returnVal = lRetVal_int < rRetVal_int;
-                    break;
-                default:
-                    throw new UnxpectedParamTypeExc(m_lNode.ReturnType(), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.LESS_THEN);
-            }
-
+            int lRetVal_int;
+            int rRetVal_int;
+            m_lNode.evalNode(out lRetVal_int);
+            m_rNode.evalNode(out rRetVal_int);
+            returnVal = lRetVal_int < rRetVal_int;
         }
     }
     public class LessOrEQNode : BinaryCompareOp
     {
         public override void evalNode(out bool returnVal)
         {
-            if (m_lNode.ReturnType() != m_rNode.ReturnType())
+            if (!isReturnTypeOfBothInt(m_lNode, m_rNode))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(), m_lNode.ReturnType(), GameStatData.BoolOperators.LESS_OR_EQUAL);
-            switch (m_lNode.ReturnType())
-            {
-                case GameStatData.NodeReturnType.INT:
-                    int lRetVal_int;
-                    int rRetVal_int;
-                    m_lNode.evalNode(out lRetVal_int);
-                    m_rNode.evalNode(out rRetVal_int);
-                    returnVal = lRetVal_int <= rRetVal_int;
-                    break;
-                default:
-                    throw new UnxpectedParamTypeExc(m_lNode.ReturnType(), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.LESS_OR_EQUAL);
-            }
+            int lRetVal_int;
+            int rRetVal_int;
+            m_lNode.evalNode(out lRetVal_int);
+            m_rNode.evalNode(out rRetVal_int);
+            returnVal = lRetVal_int <= rRetVal_int;
 
         }
     }
@@ -262,20 +299,13 @@ namespace EnvironmentCreator
     {
         public override void evalNode(out bool returnVal)
         {
-            if (m_lNode.ReturnType() != m_rNode.ReturnType())
+            if (!isReturnTypeOfBothInt(m_lNode, m_rNode))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(), m_lNode.ReturnType(), GameStatData.BoolOperators.MORE_THEN);
-            switch (m_lNode.ReturnType())
-            {
-                case GameStatData.NodeReturnType.INT:
-                    int lRetVal_int;
-                    int rRetVal_int;
-                    m_lNode.evalNode(out lRetVal_int);
-                    m_rNode.evalNode(out rRetVal_int);
-                    returnVal = lRetVal_int > rRetVal_int;
-                    break;
-                default:
-                    throw new UnxpectedParamTypeExc(m_lNode.ReturnType(), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.MORE_THEN);
-            }
+            int lRetVal_int;
+            int rRetVal_int;
+            m_lNode.evalNode(out lRetVal_int);
+            m_rNode.evalNode(out rRetVal_int);
+            returnVal = lRetVal_int > rRetVal_int;
 
         }
     }
@@ -283,20 +313,13 @@ namespace EnvironmentCreator
     {
         public override void evalNode(out bool returnVal)
         {
-            if (m_lNode.ReturnType() != m_rNode.ReturnType())
+            if (!isReturnTypeOfBothInt(m_lNode, m_rNode))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(), m_lNode.ReturnType(), GameStatData.BoolOperators.MORE_OR_EQUAL);
-            switch (m_lNode.ReturnType())
-            {
-                case GameStatData.NodeReturnType.INT:
-                    int lRetVal_int;
-                    int rRetVal_int;
-                    m_lNode.evalNode(out lRetVal_int);
-                    m_rNode.evalNode(out rRetVal_int);
-                    returnVal = lRetVal_int >= rRetVal_int;
-                    break;
-                default:
-                    throw new UnxpectedParamTypeExc(m_lNode.ReturnType(), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.MORE_OR_EQUAL);
-            }
+            int lRetVal_int;
+            int rRetVal_int;
+            m_lNode.evalNode(out lRetVal_int);
+            m_rNode.evalNode(out rRetVal_int);
+            returnVal = lRetVal_int >= rRetVal_int;
 
         }
     }

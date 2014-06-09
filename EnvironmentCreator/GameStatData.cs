@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using EnvironmentCreator.Gammars;
 
 namespace EnvironmentCreator
 {
@@ -25,9 +26,13 @@ namespace EnvironmentCreator
         public enum NodeReturnType
         {
             INT,
-            BOOL
+            BOOL,
+            INT_BOOL
         }
         public static Dictionary<string, BoolOperators> m_compareOper;
+        public static GStrat_VIS_CondNode m_condNode_VIS;
+        public static GStrat_VIS_ReturnType m_returnType_VIS;
+        public static GStrat_VIS_int m_int_VIS;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string GetCurrentMethod()
@@ -42,6 +47,10 @@ namespace EnvironmentCreator
          */
         static GameStatData()
         {
+            m_condNode_VIS = new GStrat_VIS_CondNode();
+            m_returnType_VIS = new GStrat_VIS_ReturnType();
+            m_int_VIS = new GStrat_VIS_int();
+
             m_compareOper = new Dictionary<string, BoolOperators>();
 
             m_compareOper.Add("==", BoolOperators.EQUAL);

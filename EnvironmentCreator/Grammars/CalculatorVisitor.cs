@@ -35,6 +35,7 @@ namespace EnvironmentCreator.Gammars
         }
         public override int VisitMulDiv(CalculatorParser.MulDivContext context)
         {
+            
             int left = Visit(context.expr(0));
             int right = Visit(context.expr(1));
             if (context.op.Type == CalculatorParser.MUL)

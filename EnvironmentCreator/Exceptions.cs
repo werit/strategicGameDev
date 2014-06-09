@@ -45,4 +45,18 @@ namespace EnvironmentCreator
             Console.Error.WriteLine("Found unexpected token in '{0}'",where);
         }
     }
+    public class CannotChooseVariableTypeExc : SystemException
+    {
+        public CannotChooseVariableTypeExc(string variable)
+        {
+            Console.Error.WriteLine("Cannot choose variable type of '{0}' variable from context.", variable);
+        }
+    }
+    public class UnknownAncestorType : SystemException
+    {
+        public UnknownAncestorType(string ancestor)
+        {
+            Console.Error.WriteLine("Ancestor with name '{0}', was not fund.", ancestor);
+        }
+    }
 }

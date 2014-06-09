@@ -9,6 +9,9 @@ namespace EnvironmentCreator
     public class Types
     {
         private Types m_ancestor;
+        /**
+         * Variable containing names of all integer values of this type and theirs values.
+         */
         private Dictionary<string,int> m_intVariables;
         private Dictionary<string, bool> m_boolVariables;
         private string m_name = null;

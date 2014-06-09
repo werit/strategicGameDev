@@ -44,15 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammars\GStrat_VIS_ReturnType.cs" />
+    <Compile Include="Types.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="ConditionNode.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="GameStatData.cs" />
-    <Compile Include="Gammars\CalculatorVisitor.cs" />
-    <Compile Include="Gammars\GStrat_VIS_int.cs" />
-    <Compile Include="Gammars\GStrat_VIS_string.cs" />
-    <Compile Include="Gammars\tmpListener.cs" />
+    <Compile Include="Grammars\CalculatorVisitor.cs" />
+    <Compile Include="Grammars\GStrat_VIS_int.cs" />
+    <Compile Include="Grammars\GStrat_VIS_CondNode.cs" />
+    <Compile Include="Grammars\tmpListener.cs" />
     <Compile Include="GrammarInpStorage.cs" />
     <Compile Include="GroundingParams.cs" />
     <Compile Include="IGramChoice.cs" />

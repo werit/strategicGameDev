@@ -83,19 +83,5 @@ namespace EnvironmentCreator.Gammars
         {
             return Visit(context.expression());
         }
-
-        public override ConditionNode VisitAction(GStratParser.ActionContext context)
-        {
-            return base.VisitAction(context);
-        }
-        public override ConditionNode VisitInstance(GStratParser.InstanceContext context)
-        {
-            return base.VisitInstance(context);
-        }
-        public override ConditionNode VisitFunctionCall(GStratParser.FunctionCallContext context)
-        {
-            return base.VisitFunctionCall(context);
-        }
-        
     }
 }
