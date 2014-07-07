@@ -25,6 +25,11 @@ namespace EnvironmentCreator
             Console.Error.WriteLine("Different return types was passed as parameter of compare function '{0}', expected parameter type was '{1}' and got '{2}'",
                 compareFunction, expectedType.ToString(), gotType.ToString());
         }
+        public UnxpectedParamTypeExc(GameStatData.NodeReturnType expectedType, GameStatData.NodeReturnType gotType, GameStatData.AssignOperators assignFunction)
+        {
+            Console.Error.WriteLine("Different return types was passed as parameter of assign function '{0}', expected parameter type was '{1}' and got '{2}'",
+                assignFunction, expectedType.ToString(), gotType.ToString());
+        }
     }
     public class FunctionNotSupportedExcp : SystemException
     {

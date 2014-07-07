@@ -23,6 +23,15 @@ namespace EnvironmentCreator
             LESS_OR_EQUAL,
             MORE_OR_EQUAL
         }
+        public enum AssignOperators
+        {
+            ASSIGN,
+            SUBSTRACT_ASSIGN,
+            ADD_ASSIGN,
+            MULTIPL_ASSIGN,
+            DIVISION_ASSIGN,
+            MODUO_ASSIGN
+        }
         public enum NodeReturnType
         {
             INT,
@@ -30,7 +39,7 @@ namespace EnvironmentCreator
             INT_BOOL
         }
         public static Dictionary<string, BoolOperators> m_compareOper;
-        public static GStrat_VIS_CondNode m_condNode_VIS;
+        public static GStrat_VIS_EvalNode m_condNode_VIS;
         public static GStrat_VIS_ReturnType m_returnType_VIS;
         public static GStrat_VIS_int m_int_VIS;
 
@@ -47,7 +56,7 @@ namespace EnvironmentCreator
          */
         static GameStatData()
         {
-            m_condNode_VIS = new GStrat_VIS_CondNode();
+            m_condNode_VIS = new GStrat_VIS_EvalNode();
             m_returnType_VIS = new GStrat_VIS_ReturnType();
             m_int_VIS = new GStrat_VIS_int();
 

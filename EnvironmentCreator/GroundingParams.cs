@@ -14,6 +14,9 @@ namespace EnvironmentCreator
         static GroundingParams()
         {
             m_InstanceBoolVar = new Dictionary<string, bool>();
+            // inicilize bool identifiers and their bool value
+            m_InstanceBoolVar.Add("true", true);
+            m_InstanceBoolVar.Add("false", false);
             m_InstanceIntegerVar = new Dictionary<string, int>();
             m_types = new Dictionary<string, Types>();
         }

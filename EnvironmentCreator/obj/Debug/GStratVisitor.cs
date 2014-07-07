@@ -81,6 +81,13 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitParenth([NotNull] GStratParser.ParenthContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GStratParser.actionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitActionCall([NotNull] GStratParser.ActionCallContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.functionCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -107,6 +114,13 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIdent([NotNull] GStratParser.IdentContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GStratParser.CallAct"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCallAct([NotNull] GStratParser.CallActContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.action"/>.
