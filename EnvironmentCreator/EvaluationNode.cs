@@ -146,7 +146,10 @@ namespace EnvironmentCreator
     }
     public class IDNode : EvaluationNode
     {
+        // parameter identifier after dot
         protected string m_id;
+        // instance identifier
+        protected string m_instance_id;
         public override GameStatData.NodeReturnType ReturnType()
         {
             if (GroundingParams.m_InstanceBoolVar.ContainsKey(m_id) && GroundingParams.m_InstanceIntegerVar.ContainsKey(m_id))
@@ -161,17 +164,30 @@ namespace EnvironmentCreator
                 }
             throw new UnknownParameterExc(m_id);
         }
+        /*
+         * Method sets parameter identifier
+         */
         public void SetId(string id)
         {
-            this.m_id = id;
+            if(id != null)
+                this.m_id = id;
         }
+
         public IDNode() { }
-        public IDNode(string id){
-            this.m_id = id;
+        public IDNode(string instance, string param)
+        {
+            this.m_id = param;
+            this.m_instance_id = instance;
+        }
+        public IDNode(string parameter){
+            this.m_id = parameter;
         }
         public override string ToString()
         {
-            return this.m_id;
+            if (m_instance_id != null)
+                return this.m_instance_id + '.' + this.m_id;
+            else
+                return this.m_id;
         }
     }
     public abstract class BinaryCompareOp : BinaryOp

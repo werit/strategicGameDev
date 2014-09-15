@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator
 {
-    class Action
+    public class Action
     {
         private string m_name;
         private EvaluationNode m_duration;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator.Gammars
 {
-    class GStrat_VIS_ReturnType : GStratBaseVisitor<GameStatData.NodeReturnType>
+    public class GStrat_VIS_ReturnType : GStratBaseVisitor<GameStatData.NodeReturnType>
     {
         private string m_variableName = "";
         public string GetVarName()

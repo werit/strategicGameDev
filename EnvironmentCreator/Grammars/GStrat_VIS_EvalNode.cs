@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator.Gammars
 {
-    class GStrat_VIS_EvalNode : GStratBaseVisitor<EvaluationNode>
+    public class GStrat_VIS_EvalNode : GStratBaseVisitor<EvaluationNode>
     {
         public override EvaluationNode VisitAddSub(GStratParser.AddSubContext context)
         {
@@ -40,6 +40,10 @@ namespace EnvironmentCreator.Gammars
             }
             thisNode.SetNodes(lNode, rNode);
             return thisNode;
+        }
+        public override EvaluationNode VisitId(GStratParser.IdContext context)
+        {
+            return base.VisitId(context);
         }
         public override EvaluationNode VisitIdent(GStratParser.IdentContext context)
         {
