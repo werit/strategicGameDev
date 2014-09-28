@@ -15,7 +15,7 @@ namespace EnvironmentCreator.Gammars
         }
         public override GameStatData.NodeReturnType VisitNewVariable(GStratParser.NewVariableContext context)
         {
-            m_variableName = context.ID().GetText();
+            m_variableName = context.NAME().GetText();
             if (context.opt.Type == GStratParser.NUMBER_ID)
                 return GameStatData.NodeReturnType.INT;
             else

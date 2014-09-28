@@ -32,6 +32,18 @@ namespace EnvironmentCreator
             DIVISION_ASSIGN,
             MODUO_ASSIGN
         }
+        /** @brief Enumeration representing defined artmetic operations on integers.
+         * As of now is defined five basic aritmatic operations on integers.
+         * 
+         */
+        public enum AritmeticOperators
+        {
+            ADDITION,
+            SUBSTRACTION,
+            MULTIPLICATION,
+            DIVISION,
+            MODULATION
+        }
         public enum NodeReturnType
         {
             INT,

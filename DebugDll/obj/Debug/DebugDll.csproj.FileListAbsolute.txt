@@ -4,7 +4,3 @@ C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\b
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.exe
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.pdb
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.csprojResolveAssemblyReference.cache
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\EnvironmentCreator.dll
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\Antlr4.Runtime.v4.5.dll
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\EnvironmentCreator.pdb
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\Antlr4.Runtime.v4.5.xml

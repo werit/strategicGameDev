@@ -41,17 +41,27 @@ namespace EnvironmentCreator.Gammars
             thisNode.SetNodes(lNode, rNode);
             return thisNode;
         }
+        /* @brief Method creating Identification evaluation node.
+         * @param Parsing context.
+         * Method return two types of identifier. One is just containing variable. Second identifier takes name of instance of class and parameter of this class. 
+         * For example function header defined for function 'fn', class 'Soldier' with variable 'bulletCount' : fn(Soldier shooter)
+         * 
+         * identifier referencing to bulletCount of shooter will look like shooter.bulletCount (during runetime for shooter will be assigned real instance).
+         */
         public override EvaluationNode VisitId(GStratParser.IdContext context)
         {
-            return base.VisitId(context);
+            if (context.NAME().Count > 1)
+                return new IDNode(context.NAME(0).GetText(), context.NAME(1).GetText());
+            else
+                return new IDNode(context.NAME(0).GetText());
         }
         public override EvaluationNode VisitIdent(GStratParser.IdentContext context)
         {
-            return new IDNode(context.ID().GetText());
+            return Visit(context.id());
         }
         public override EvaluationNode VisitPrecondExpr(GStratParser.PrecondExprContext context)
         {
-            EvaluationNode lNode = Visit(context.ID());
+            EvaluationNode lNode = Visit(context.id());
             EvaluationNode rNode = Visit(context.expression());
             BinaryCompareOp thisNode;
             switch(context.op.Type){
@@ -89,7 +99,7 @@ namespace EnvironmentCreator.Gammars
         }
         public override EvaluationNode VisitAssignExpr(GStratParser.AssignExprContext context)
         {
-            EvaluationNode lNode = Visit(context.ID());
+            EvaluationNode lNode = Visit(context.id());
             EvaluationNode rNode = Visit(context.expression());
             BinaryOp thisNode;
             switch(context.opt.Type){

@@ -40,24 +40,43 @@ namespace EnvironmentCreator.Gammars
         public override int VisitNewType(GStratParser.NewTypeContext context)
         {
 
-            Dictionary<string, int> intVariables = new Dictionary<string, int>();
-            Dictionary<string, bool> boolVariables = new Dictionary<string, bool>();
+            List<string> intVariables = new List<string>();
+            List<string> boolVariables = new List<string>();
             // get all variables of type
             for (int i = 0; i < context.variable().Count; ++i)
             {
                 if (GameStatData.m_returnType_VIS.Visit(context.variable(i)) == GameStatData.NodeReturnType.INT)
-                    intVariables.Add(GameStatData.m_returnType_VIS.GetVarName(), 0);
+                    intVariables.Add(GameStatData.m_returnType_VIS.GetVarName());
                 else
-                    boolVariables.Add(GameStatData.m_returnType_VIS.GetVarName(), false);
+                    boolVariables.Add(GameStatData.m_returnType_VIS.GetVarName());
             }
 
             Types ancestor = null;
-            if (context.ID().Count > 1)
-                if (!GroundingParams.m_types.TryGetValue(context.ID(1).GetText(), out ancestor))
-                    throw new UnknownAncestorType(context.ID(1).GetText());
+            if (context.NAME().Count > 1)
+                if (!GroundingParams.m_types.TryGetValue(context.NAME(1).GetText(), out ancestor))
+                    throw new UnknownAncestorType(context.NAME(1).GetText());
             // create right now defined type
-            Types typ = new Types(context.ID(0).GetText(), ancestor, intVariables, boolVariables);
+            Types typ = new Types(context.NAME(0).GetText(), ancestor, intVariables, boolVariables);
             GroundingParams.m_types.Add(typ.GetName(), typ);
+            return 0;
+        }
+
+        /** @brief Method used when new instance of type is beign created.
+         * Method reads name of type and prepares instances with selected names.
+         * Then new type is created and added to set of types in GroundingParams::m_types.
+         * @throws UnknownAncestorType when unknown ancestor was defined or ancestor is defined later then this type.
+         * @param context of grammar.
+         */
+        public override int VisitNewInstances(GStratParser.NewInstancesContext context)
+        {
+            Types type = null;
+            Instance inst = null;
+            if (!GroundingParams.m_types.TryGetValue(context.NAME(0).GetText(), out type))
+                throw new UnknownType(context.NAME(0).GetText());
+            for (int i = 1; i < context.NAME().Count; ++i)
+            {
+                inst = new Instance(context.NAME(i).GetText(),type);
+            }
             return 0;
         }
     }

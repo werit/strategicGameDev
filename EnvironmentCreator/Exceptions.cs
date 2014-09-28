@@ -64,4 +64,11 @@ namespace EnvironmentCreator
             Console.Error.WriteLine("Ancestor with name '{0}', was not fund.", ancestor);
         }
     }
+    public class UnknownType : SystemException
+    {
+        public UnknownType(string typeName)
+        {
+            Console.Error.WriteLine("Type with name '{0}', was not fund.", typeName);
+        }
+    }
 }

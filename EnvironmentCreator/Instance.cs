@@ -9,11 +9,53 @@ namespace EnvironmentCreator
     class Instance
     {
         private Types m_instanceOf;
+        private string m_instName;
         /** @brief List of planned actions of instance in  order.
          * Variable storing all actions that are about to happen.
          * Possible to be empty in case no action prepared.
          */
-        public List<Action> m_actionQue = new List<Action>();
+        private List<Action> m_actionQue = new List<Action>();
 
+        public Instance(string name, Types type)
+        {
+            this.m_instName = name;
+            this.m_instanceOf = type;
+        }
+        /** @brief Method for adding actions to action que of instance.
+         * Separates user usage from implementation.
+         */
+        public void AddAction(Action act)
+        {
+            this.m_actionQue.Add(act);
+        }
+        /** @brief Method for getting first action from action que of instance.
+         * Separates user usage from implementation.
+         */
+        public Action GetAction()
+        {
+            return this.m_actionQue.First();
+        }
+
+        /** @brief Method for getting type name of action.
+         * Separates user usage from implementation.
+         */
+        public string GetTypeName()
+        {
+            return this.m_instanceOf.GetName();
+        }
+        /** @brief Method returning type of instance.
+         * Separates user usage from implementation.
+         */
+        public Types GetInstanceType()
+        {
+            return this.m_instanceOf;
+        }
+        /** @brief Method returning name of this instance.
+         * 
+         */
+        public string GetInstanceName()
+        {
+            return this.m_instName;
+        }
     }
 }
