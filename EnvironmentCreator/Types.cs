@@ -8,26 +8,43 @@ namespace EnvironmentCreator
 {
     public class Types
     {
-        /* 
-         * Default ancestor of all types.
-         */
-        private static Types m_defaultAncestor;
-        /*
-         * Default action of default ancestor.
-         */
-        private static Action m_ancestDefaultAction;
+        private static int m_nonameCnt;
         /*
          * Reference to ancestor of type.
          */
         private Types m_ancestor;
+        
+        /**
+         * Internal storage for all descendants of this type
+         */
+        private List<Types> m_desc = new List<Types>();
+
         /* 
-         * Default action of this type.
-         */ 
-        private Action m_defaultAction;
+         * Default ancestor of all types.
+         */
+        private static Types m_defaultAncestor;
+        /**
+         * Method creates copy of descendants and returns this copy. Therefore changes in array will not affect source.
+         * @return Method returns array of descendants of this type.
+         */
+        public Types[] GetDesc()
+        {
+            return this.m_desc.ToArray();
+        }
+
+        /**
+         * Add descendant passed as parameter to list of descendants.
+         */
+        public void AddDesc(Types additionDesc)
+        {
+            m_desc.Add(additionDesc);
+        }
+        
         /*
          * Pointer to all instances of this type.
          */
-        private List<Instance> m_typeInstances;
+        private List<Instance> m_typeInstances = new List<Instance>();
+
         /**
          * Variable containing names of all integer values of this type and theirs values.
          */
@@ -41,6 +58,23 @@ namespace EnvironmentCreator
          */
         private string m_name = null;
 
+        /**
+         * Method creates copy of list of instances and returns this copy. Therefore changes in array will not affect source.
+         * @return Method returns array of instances of this type.
+         */
+        public Instance[] GetInst()
+        {
+            return this.m_typeInstances.ToArray();
+        }
+
+        /**
+         * Add instance passed as parameter to list of instances.
+         */
+        public void AddInst(Instance[] newInstances)
+        {
+            this.m_typeInstances.AddRange(newInstances);
+        }
+
         /** @brief Static constructor for initialising.
          * Static constructor to inicialize static variables:
          *  - m_defaultAncestor
@@ -51,6 +85,7 @@ namespace EnvironmentCreator
             // TODO: default action
             m_defaultAncestor = new Types("defaultAncestor");
             m_defaultAncestor.m_ancestor = null;
+            m_nonameCnt = 0;
             //m_defaultAction = new Action("doNothing"); 
         }
         public Types()
@@ -61,7 +96,18 @@ namespace EnvironmentCreator
         }
         public Types(string name, Types ancestor = null, List<string> intVariables = null, List<string> boolVariables = null)
         {
-            m_name = name != null ? name : "noname";
+            m_name = name != null ? name : "noname" + m_nonameCnt++;
+            if (ancestor == null)
+            {
+                this.m_ancestor = Types.m_defaultAncestor;
+                Types.m_defaultAncestor.AddDesc(this);
+            }
+            else
+            {
+                this.m_ancestor = ancestor;
+                this.m_ancestor.AddDesc(this);
+            }
+            this.m_ancestor.AddDesc(this);
             m_ancestor = ancestor != null ? ancestor : Types.m_defaultAncestor;
             m_intVariables = intVariables != null ? intVariables : new List<string>();
             m_boolVariables = boolVariables != null ? boolVariables : new List<string>();
@@ -95,22 +141,6 @@ namespace EnvironmentCreator
         public string[] GetAllBoolVar()
         {
             return m_boolVariables.ToArray();
-        }
-        /** @brief Method returning default action of type.
-         * Method returns default action of this type.
-         * If default action is set to null, then method will set it's instance's #m_defaultAction to default action of ancestor. 
-         * @return Value set as default action of this type. Null is never return value.
-         */
-        public Action GetDefaultAction()
-        {
-            if (this.m_defaultAction != null)
-                return this.m_defaultAction;
-            else
-            {
-                Action act = m_ancestor.GetDefaultAction();
-                this.m_defaultAction = act;
-                return act;
-            }
         }
         /** @brief Method returning ancestor of type.
          * 

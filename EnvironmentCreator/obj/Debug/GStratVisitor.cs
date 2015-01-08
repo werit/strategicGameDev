@@ -32,11 +32,11 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.cycle"/>.
+	/// Visit a parse tree produced by <see cref="GStratParser.effecte"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitCycle([NotNull] GStratParser.CycleContext context);
+	Result VisitEffecte([NotNull] GStratParser.EffecteContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.CallFn"/>.
@@ -74,13 +74,6 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitPrecondExpr([NotNull] GStratParser.PrecondExprContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.baseAction"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBaseAction([NotNull] GStratParser.BaseActionContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.CallFnPrecond"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -95,32 +88,11 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitParenth([NotNull] GStratParser.ParenthContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.defTypetAction"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDefTypetAction([NotNull] GStratParser.DefTypetActionContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.actionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitActionCall([NotNull] GStratParser.ActionCallContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.id"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitId([NotNull] GStratParser.IdContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.actionBody"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitActionBody([NotNull] GStratParser.ActionBodyContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.functionCall"/>.
@@ -130,13 +102,6 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitFunctionCall([NotNull] GStratParser.FunctionCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.AssignExpr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAssignExpr([NotNull] GStratParser.AssignExprContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.NewType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -144,11 +109,11 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitNewType([NotNull] GStratParser.NewTypeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.parametricAction"/>.
+	/// Visit a parse tree produced by <see cref="GStratParser.AssignExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParametricAction([NotNull] GStratParser.ParametricActionContext context);
+	Result VisitAssignExpr([NotNull] GStratParser.AssignExprContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.ident"/>.
@@ -177,13 +142,6 @@ public interface IGStratVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitNewVariable([NotNull] GStratParser.NewVariableContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="GStratParser.filter"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFilter([NotNull] GStratParser.FilterContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GStratParser.NewInstances"/>.

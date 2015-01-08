@@ -45,10 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="Bridge.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="GameProcessing.cs" />
+    <Compile Include="Grammars\GStrat_VIS_EvalNode.cs" />
     <Compile Include="Grammars\GStrat_VIS_ReturnType.cs" />
     <Compile Include="Instance.cs" />
+    <Compile Include="Pair.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="EvaluationNode.cs" />
@@ -57,7 +60,6 @@
     <Compile Include="GameStatData.cs" />
     <Compile Include="Grammars\CalculatorVisitor.cs" />
     <Compile Include="Grammars\GStrat_VIS_int.cs" />
-    <Compile Include="Grammars\GStrat_VIS_EvalNode.cs" />
     <Compile Include="Grammars\tmpListener.cs" />
     <Compile Include="GrammarInpStorage.cs" />
     <Compile Include="GroundingParams.cs" />

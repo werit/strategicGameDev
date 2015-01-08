@@ -8,6 +8,42 @@ namespace EnvironmentCreator.Gammars
 {
     public class GStrat_VIS_EvalNode : GStratBaseVisitor<EvaluationNode>
     {
+        public override EvaluationNode VisitAssignExpr(GStratParser.AssignExprContext context)
+        {
+            EvaluationNode lNode = GameStatData.m_assignNode_VIS.Visit(context.id());
+            EvaluationNode rNode = GameStatData.m_assignNode_VIS.Visit(context.expression());
+            NewAssign thisNode;
+            switch (context.opt.Type)
+            {
+                case GStratParser.ASSIGN:
+                    thisNode = new Assign();
+                    break;
+                case GStratParser.ASSIGN_MINUS:
+                    thisNode = new SubstractAssign();
+                    break;
+                case GStratParser.ASSIGN_DIV:
+                    thisNode = new DivisionAssign();
+                    break;
+                case GStratParser.ASSIGN_MUL:
+                    thisNode = new MultiplAssign();
+                    break;
+                case GStratParser.ASSIGN_MOD:
+                    thisNode = new ModAssign();
+                    break;
+                case GStratParser.ASSIGN_ADD:
+                    thisNode = new AddAssign();
+                    break;
+                default:
+                    throw new UnexpectedParserToken("assign expresion");
+            }
+            thisNode.SetNodes(lNode, rNode);
+            return thisNode;
+        }
+        public override EvaluationNode VisitCallFnPrecond(GStratParser.CallFnPrecondContext context)
+        {
+            return base.VisitCallFnPrecond(context);
+        }
+
         public override EvaluationNode VisitAddSub(GStratParser.AddSubContext context)
         {
             EvaluationNode lNode = Visit(context.expression(0));
@@ -20,12 +56,13 @@ namespace EnvironmentCreator.Gammars
             thisNode.SetNodes(lNode, rNode);
             return thisNode;
         }
-        public override EvaluationNode VisitMulDivMod(GStratParser.AddSubContext context)
+        public override EvaluationNode VisitMulDivMod(GStratParser.MulDivModContext context)
         {
             EvaluationNode lNode = Visit(context.expression(0));
             EvaluationNode rNode = Visit(context.expression(1));
             BinaryMathOp thisNode;
-            switch(context.opt.Type){
+            switch (context.opt.Type)
+            {
                 case GStratParser.MUL:
                     thisNode = new MulNode();
                     break;
@@ -64,7 +101,8 @@ namespace EnvironmentCreator.Gammars
             EvaluationNode lNode = Visit(context.id());
             EvaluationNode rNode = Visit(context.expression());
             BinaryCompareOp thisNode;
-            switch(context.op.Type){
+            switch (context.op.Type)
+            {
                 case GStratParser.EQUAL:
                     thisNode = new EqualNode();
                     break;
@@ -83,7 +121,7 @@ namespace EnvironmentCreator.Gammars
                 case GStratParser.MORE_OR_EQ:
                     thisNode = new MoreOrEQNode();
                     break;
-                default :
+                default:
                     throw new UnexpectedParserToken("precondition expresion");
             }
             thisNode.SetNodes(lNode, rNode);
@@ -96,36 +134,6 @@ namespace EnvironmentCreator.Gammars
         public override EvaluationNode VisitParenth(GStratParser.ParenthContext context)
         {
             return Visit(context.expression());
-        }
-        public override EvaluationNode VisitAssignExpr(GStratParser.AssignExprContext context)
-        {
-            EvaluationNode lNode = Visit(context.id());
-            EvaluationNode rNode = Visit(context.expression());
-            BinaryOp thisNode;
-            switch(context.opt.Type){
-                case GStratParser.ASSIGN:
-                    thisNode = new Assign();
-                    break;
-                case GStratParser.ASSIGN_MINUS:
-                    thisNode = new SubstractAssign();
-                    break;
-                case GStratParser.ASSIGN_DIV:
-                    thisNode = new DivisionAssign();
-                    break;
-                case GStratParser.ASSIGN_MUL:
-                    thisNode = new MultiplAssign();
-                    break;
-                case GStratParser.ASSIGN_MOD:
-                    thisNode = new ModAssign();
-                    break;
-                case GStratParser.ASSIGN_ADD:
-                    thisNode = new AddAssign();
-                    break;
-                default:
-                    throw new UnexpectedParserToken("assign expresion");
-            }
-            thisNode.SetNodes(lNode, rNode);
-            return thisNode;
         }
     }
 }

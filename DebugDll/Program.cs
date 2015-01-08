@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EnvironmentCreator;
 
 
 namespace DebugDll
@@ -20,6 +21,7 @@ namespace DebugDll
             int i;
             test.TryGetValue(0,out i);
             i = 5;
+            Types t = new Types();
             Console.WriteLine(test[0]);
         }
     }

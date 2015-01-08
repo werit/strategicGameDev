@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator
 {
-    class Instance
+    public class Instance
     {
         private Types m_instanceOf;
         private string m_instName;
+
         /** @brief List of planned actions of instance in  order.
          * Variable storing all actions that are about to happen.
          * Possible to be empty in case no action prepared.
@@ -20,6 +21,7 @@ namespace EnvironmentCreator
         {
             this.m_instName = name;
             this.m_instanceOf = type;
+            GroundingParams.m_instances.Add(this.GetInstanceName(), this);
         }
         /** @brief Method for adding actions to action que of instance.
          * Separates user usage from implementation.
@@ -28,13 +30,7 @@ namespace EnvironmentCreator
         {
             this.m_actionQue.Add(act);
         }
-        /** @brief Method for getting first action from action que of instance.
-         * Separates user usage from implementation.
-         */
-        public Action GetAction()
-        {
-            return this.m_actionQue.First();
-        }
+        
 
         /** @brief Method for getting type name of action.
          * Separates user usage from implementation.

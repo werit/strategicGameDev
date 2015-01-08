@@ -16,10 +16,15 @@ namespace EnvironmentCreator
          * 
          */
         public static Dictionary<string,Dictionary<string, bool>> m_InstanceBoolVar;
+        /**
+         * public storage for all instances.
+         */
+        public static Dictionary<string, Instance> m_instances;
         /** @brief Variable storing type name and type.
          * 
          */
         public static Dictionary<string, Types> m_types;
+        public static Dictionary<string, Action> m_actions;
         static GroundingParams()
         {
             m_InstanceBoolVar = new Dictionary<string,Dictionary<string, bool>>();
@@ -31,6 +36,8 @@ namespace EnvironmentCreator
             defBool.Add("false", false);
             m_InstanceIntegerVar = new Dictionary<string,Dictionary<string, int>>();
             m_types = new Dictionary<string, Types>();
+            m_instances = new Dictionary<string, Instance>();
+            m_actions = new Dictionary<string, Action>();
         }
 
         /** @brief Method grounding instance variables.

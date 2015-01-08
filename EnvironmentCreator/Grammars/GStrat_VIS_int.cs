@@ -13,6 +13,34 @@ namespace EnvironmentCreator.Gammars
     {
         public override int VisitAction(GStratParser.ActionContext context)
         {
+            string actName = context.NAME(0).GetText();
+            string[] paramNames = new string[(context.NAME().Count - 1) / 2];
+            string[] paramTypes = new string[(context.NAME().Count - 1) / 2];
+            EvaluationNode[] effs = new EvaluationNode[context.effect().Count];
+            EvaluationNode[] effend = new EvaluationNode[context.effecte().Count];
+            EvaluationNode dur = GameStatData.m_assignNode_VIS.Visit(context.expression());
+            EvaluationNode[] precond = new EvaluationNode[context.precondition().Count];
+            for (int i = 1; i < context.NAME().Count; i += 2)
+            {
+                paramNames[(i - 1) / 2] = context.NAME(i).GetText();
+                paramNames[(i - 1) / 2] = context.NAME(i + 1).GetText();
+            }
+
+            for (int i = 0; i < context.precondition().Count; i++)
+            {
+                precond[i] = GameStatData.m_assignNode_VIS.Visit(context.precondition(i));
+            }
+
+            for (int i = 0; i < context.effect().Count; i++)
+            {
+                effs[i] = GameStatData.m_assignNode_VIS.Visit(context.effect(i));
+            }
+
+            for (int i = 0; i < context.effecte().Count; i++)
+            {
+                effs[i] = GameStatData.m_assignNode_VIS.Visit(context.effecte(i));
+            }
+            Action act = new Action(actName, paramTypes, paramNames, dur, precond, effs, effend);
 
             return 0;
             //return base.VisitAction(context);
@@ -46,7 +74,7 @@ namespace EnvironmentCreator.Gammars
             for (int i = 0; i < context.variable().Count; ++i)
             {
                 if (GameStatData.m_returnType_VIS.Visit(context.variable(i)) == GameStatData.NodeReturnType.INT)
-                    intVariables.Add(GameStatData.m_returnType_VIS.GetVarName());
+                    intVariables.Add(GameStatData.m_returnType_VIS.GetVarName()); // getVarName stores name of variable last read
                 else
                     boolVariables.Add(GameStatData.m_returnType_VIS.GetVarName());
             }
@@ -70,13 +98,14 @@ namespace EnvironmentCreator.Gammars
         public override int VisitNewInstances(GStratParser.NewInstancesContext context)
         {
             Types type = null;
-            Instance inst = null;
+            Instance[] inst = new Instance[context.NAME().Count-1];
             if (!GroundingParams.m_types.TryGetValue(context.NAME(0).GetText(), out type))
                 throw new UnknownType(context.NAME(0).GetText());
             for (int i = 1; i < context.NAME().Count; ++i)
             {
-                inst = new Instance(context.NAME(i).GetText(),type);
+                inst[i-1] = new Instance(context.NAME(i).GetText(),type);
             }
+            type.AddInst(inst);
             return 0;
         }
     }

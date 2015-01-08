@@ -14,29 +14,9 @@ namespace EnvironmentCreator
      */
     public abstract class EvaluationNode
     {
-        public abstract GameStatData.NodeReturnType ReturnType(Dictionary<string, string> mapParam);
-        public bool isReturnTypeOfBothBool(EvaluationNode node1, EvaluationNode node2, Dictionary<string, string> mapParam)
-        {
-            return (node1.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL || node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL) && isReturnTypeSame(node1, node2,mapParam);
-        }
-        public bool isReturnTypeOfBothInt(EvaluationNode node1, EvaluationNode node2, Dictionary<string, string> mapParam)
-        {
-            return (node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT || node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL) && isReturnTypeSame(node1, node2,mapParam);
-        }
-        public bool isReturnTypeSame(EvaluationNode node1, EvaluationNode node2,Dictionary<string, string> mapParam)
-        {
-            return node1.ReturnType(mapParam) == node2.ReturnType(mapParam) ||
-                ((node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL && (node2.ReturnType(mapParam) == GameStatData.NodeReturnType.INT || node2.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)) ||
-                (node2.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL && (node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT || node1.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)));
-        }
-        public virtual void evalNode(Dictionary<string, string> mapParam,out bool returnVal)
-        {
-            throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
-        }
-        public virtual void evalNode(Dictionary<string, string> mapParam,out int returnVal) // pravdepodobne treba dodat mapovaci parameter
-        {
-            throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
-        }
+        
+        
+        
         public virtual void evalNode(Dictionary<string, string> mapParam){
             throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
         }
@@ -49,7 +29,33 @@ namespace EnvironmentCreator
         {
             return false;
         }
+        public virtual void evalNode(Dictionary<string, string> mapParam, out bool returnVal)
+        {
+            throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
+        }
+        public virtual void evalNode(Dictionary<string, string> mapParam, out int returnVal)
+        {
+            throw new FunctionNotSupportedExcp(this.GetType().GetMethod(GameStatData.GetCurrentMethod()));
+        }
+        public abstract GameStatData.NodeReturnType ReturnType(Dictionary<string, string> mapParam);
+        public bool isReturnTypeOfBothBool(EvaluationNode node1, EvaluationNode node2, Dictionary<string, string> mapParam)
+        {
+            return (node1.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL || node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL) && isReturnTypeSame(node1, node2, mapParam);
+        }
+        public bool isReturnTypeOfBothInt(EvaluationNode node1, EvaluationNode node2, Dictionary<string, string> mapParam)
+        {
+            return (node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT || node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL) && isReturnTypeSame(node1, node2, mapParam);
+        }
+        public bool isReturnTypeSame(EvaluationNode node1, EvaluationNode node2, Dictionary<string, string> mapParam)
+        {
+            return node1.ReturnType(mapParam) == node2.ReturnType(mapParam) ||
+                ((node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL && (node2.ReturnType(mapParam) == GameStatData.NodeReturnType.INT || node2.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)) ||
+                (node2.ReturnType(mapParam) == GameStatData.NodeReturnType.INT_BOOL && (node1.ReturnType(mapParam) == GameStatData.NodeReturnType.INT || node1.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)));
+        }
     }
+
+
+
     public class IntNode : EvaluationNode
     {
         protected int m_value;
@@ -369,8 +375,16 @@ namespace EnvironmentCreator
 
         }
     }
-    public abstract class NewAssign : BinaryOp
+    public abstract class NewAssign : EvaluationNode
     {
+        protected EvaluationNode m_lNode;
+        protected EvaluationNode m_rNode;
+
+        public virtual void SetNodes(EvaluationNode lNode, EvaluationNode rNode)
+        {
+            this.m_lNode = lNode;
+            this.m_rNode = rNode;
+        }
         public void assignVl(int value, Dictionary<string, string> mapParam, GameStatData.AssignOperators op)
         {
             //test    PREROB NA FUNKCIU
@@ -404,7 +418,7 @@ namespace EnvironmentCreator
                     case GameStatData.AssignOperators.DIVISION_ASSIGN:
                         GroundingParams.m_InstanceIntegerVar[trgInstance][wrds[1]] /= value;
                         break;
-                    case GameStatData.AssignOperators.MODUO_ASSIGN:
+                    case GameStatData.AssignOperators.MODULO_ASSIGN:
                         GroundingParams.m_InstanceIntegerVar[trgInstance][wrds[1]] %= value;
                         break;
                     case GameStatData.AssignOperators.MULTIPL_ASSIGN:
@@ -456,9 +470,10 @@ namespace EnvironmentCreator
     }
     public class Assign : NewAssign
     {
+        
         public override void evalNode(Dictionary<string,string> mapParam)
         {
-            if(!isReturnTypeSame(m_lNode,m_rNode,mapParam))
+            if (!m_lNode.isReturnTypeSame(m_lNode, m_rNode, mapParam))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.AssignOperators.ASSIGN);
             bool rRetVal;
             int rRetVal_int;
@@ -502,7 +517,7 @@ namespace EnvironmentCreator
     {
         public override void evalNode(Dictionary<string, string> mapParam)
         {
-            if(!isReturnTypeOfBothInt(m_lNode,m_rNode,mapParam))
+            if (!m_lNode.isReturnTypeOfBothInt(m_lNode, m_rNode, mapParam))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.AssignOperators.SUBSTRACT_ASSIGN);
             int rRetVal_int;
             m_rNode.evalNode(mapParam,out rRetVal_int);
@@ -514,7 +529,7 @@ namespace EnvironmentCreator
     {
         public override void evalNode(Dictionary<string, string> mapParam)
         {
-            if (!isReturnTypeOfBothInt(m_lNode, m_rNode,mapParam))
+            if (!m_lNode.isReturnTypeOfBothInt(m_lNode, m_rNode, mapParam))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.AssignOperators.SUBSTRACT_ASSIGN);
             int rRetVal_int;
             m_rNode.evalNode(mapParam,out rRetVal_int);
@@ -526,7 +541,7 @@ namespace EnvironmentCreator
     {
         public override void evalNode(Dictionary<string, string> mapParam)
         {
-            if (!isReturnTypeOfBothInt(m_lNode, m_rNode,mapParam))
+            if (!m_lNode.isReturnTypeOfBothInt(m_lNode, m_rNode, mapParam))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.AssignOperators.SUBSTRACT_ASSIGN);
             int rRetVal_int;
             m_rNode.evalNode(mapParam,out rRetVal_int);
@@ -538,7 +553,7 @@ namespace EnvironmentCreator
     {
         public override void evalNode(Dictionary<string, string> mapParam)
         {
-            if (!isReturnTypeOfBothInt(m_lNode, m_rNode,mapParam))
+            if (!m_lNode.isReturnTypeOfBothInt(m_lNode, m_rNode, mapParam))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.AssignOperators.SUBSTRACT_ASSIGN);
             int rRetVal_int;
             m_rNode.evalNode(mapParam,out rRetVal_int);
@@ -550,12 +565,32 @@ namespace EnvironmentCreator
     {
         public override void evalNode(Dictionary<string, string> mapParam)
         {
-            if (!isReturnTypeOfBothInt(m_lNode, m_rNode,mapParam))
+            if (!m_lNode.isReturnTypeOfBothInt(m_lNode, m_rNode, mapParam))
                 throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.AssignOperators.SUBSTRACT_ASSIGN);
             int rRetVal_int;
             m_rNode.evalNode(mapParam,out rRetVal_int);
-            assignVl(rRetVal_int, mapParam, GameStatData.AssignOperators.MODUO_ASSIGN);
-            //GroundingParams.m_InstanceIntegerVar[m_lNode.ToString()] %= rRetVal_int;
+            assignVl(rRetVal_int, mapParam, GameStatData.AssignOperators.MODULO_ASSIGN);
         }
     }
+    /**
+     * Class encapsulation function for evaluation purpouses.
+     * TODO
+     */
+    //public class FnNode : EvaluationNode
+    //{
+    //    // function to be evaluated
+    //    //private Function m_function;
+    //    public override void evalNode(Dictionary<string, string> mapParam)
+    //    {
+    //        base.evalNode(mapParam);
+    //    }
+    //    public override void evalNode(Dictionary<string, string> mapParam, out bool returnVal)
+    //    {
+    //        base.evalNode(mapParam, out returnVal);
+    //    }
+    //    public override bool isInstanceNode()
+    //    {
+    //        return false;
+    //    }
+    //}
 }

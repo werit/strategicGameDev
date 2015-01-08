@@ -17,4 +17,3 @@ C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\Environmen
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\bin\Debug\Antlr4.Runtime.v4.5.xml
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.dll
 C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.pdb
-C:\Users\msi\documents\visual studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\EnvironmentCreator.csprojResolveAssemblyReference.cache

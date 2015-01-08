@@ -30,7 +30,7 @@ namespace EnvironmentCreator
             ADD_ASSIGN,
             MULTIPL_ASSIGN,
             DIVISION_ASSIGN,
-            MODUO_ASSIGN
+            MODULO_ASSIGN
         }
         /** @brief Enumeration representing defined artmetic operations on integers.
          * As of now is defined five basic aritmatic operations on integers.
@@ -51,7 +51,7 @@ namespace EnvironmentCreator
             INT_BOOL
         }
         public static Dictionary<string, BoolOperators> m_compareOper;
-        public static GStrat_VIS_EvalNode m_condNode_VIS;
+        public static GStrat_VIS_EvalNode m_assignNode_VIS;
         public static GStrat_VIS_ReturnType m_returnType_VIS;
         public static GStrat_VIS_int m_int_VIS;
 
@@ -63,13 +63,14 @@ namespace EnvironmentCreator
 
             return sf.GetMethod().Name;
         }
+        public static GameProcessing game;
         /** @brief Static initialisation of dictionary data.
          * Constructor takes dictionaries of this class and initialise them.
          */
         static GameStatData()
         {
-            m_condNode_VIS = new GStrat_VIS_EvalNode();
             m_returnType_VIS = new GStrat_VIS_ReturnType();
+            m_assignNode_VIS = new GStrat_VIS_EvalNode();
             m_int_VIS = new GStrat_VIS_int();
 
             m_compareOper = new Dictionary<string, BoolOperators>();
@@ -80,6 +81,8 @@ namespace EnvironmentCreator
             m_compareOper.Add(">", BoolOperators.MORE_THEN);
             m_compareOper.Add("<=", BoolOperators.LESS_OR_EQUAL);
             m_compareOper.Add(">=", BoolOperators.MORE_OR_EQUAL);
+
+            game = new GameProcessing();
         }
     }
 }
