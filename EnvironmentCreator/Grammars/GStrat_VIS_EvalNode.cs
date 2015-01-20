@@ -8,6 +8,10 @@ namespace EnvironmentCreator.Gammars
 {
     public class GStrat_VIS_EvalNode : GStratBaseVisitor<EvaluationNode>
     {
+        public override EvaluationNode VisitEffecte(GStratParser.EffecteContext context)
+        {
+            return this.Visit(context.effect());
+        }
         public override EvaluationNode VisitAssignExpr(GStratParser.AssignExprContext context)
         {
             EvaluationNode lNode = GameStatData.m_assignNode_VIS.Visit(context.id());

@@ -25,9 +25,10 @@ namespace EnvironmentCreator
         //private Dictionary<string,int> m_paramPos;
         private string[] m_paramPos;
 
-        private Action() {
-            m_name =  "noname";
-            m_duration =  new IntNode(0);
+        private Action()
+        {
+            m_name = "noname";
+            m_duration = new IntNode(0);
             m_preconditions = new EvaluationNode[0];
             m_startEffects = new EvaluationNode[0];
             m_endEffects = new EvaluationNode[0];
@@ -35,7 +36,7 @@ namespace EnvironmentCreator
         public Action(string name, string[] paramTypes, string[] paramNames, EvaluationNode duration, EvaluationNode[] precond, EvaluationNode[] startEff, EvaluationNode[] endEff)
         {
             m_name = name != null ? name : "noname";
-            m_typeParamLink = new Dictionary<string,string>();
+            m_typeParamLink = new Dictionary<string, string>();
             //m_paramPos = new Dictionary<string,int>();
             m_paramPos = new string[paramNames.Length];
             for (int i = 0; i < paramNames.Length; i++)
@@ -53,28 +54,52 @@ namespace EnvironmentCreator
         /**
          * Method handling evaluation in every update.
          */
-        public void Call(string[] parameters){
+        public void Call(string[] parameters)
+        {
+            if (parameters == null || parameters.Length != this.m_typeParamLink.Count)
+                throw new Exception();
             Dictionary<string, string> ns = new Dictionary<string, string>();
-            for (int i = 0; i < parameters.Length; i++)
-			{
+            for (int i = 0; i < parameters.Length; ++i)            
                 ns.Add(m_paramPos[i], parameters[i]);
-			}
+            
             bool result;
             for (int i = 0; i < m_preconditions.Length; ++i)
             {
-                m_preconditions[i].evalNode(ns,out result);
+                m_preconditions[i].evalNode(ns, out result);
                 if (!result)
                     return;
             }
             // evaluate starting effects
-            for (int i = 0; i < m_startEffects.Length; ++i)
-            {
+            for (int i = 0; i < m_startEffects.Length; ++i)        
                 m_startEffects[i].evalNode(ns);
-            }
-            // wait for duration
-            int res;
-            m_duration.evalNode(ns, out res);
-            GameStatData.game.AddAction(res, ns, this.m_name);
+            // rest of action will be handled through trigger end effect #TriggerEndEff
+            TriggerEndEff effend = new TriggerEndEff();
+            GameStatData.game.AddActionEndEff(effend);
+        }
+
+        public int GetDuration(Dictionary<string, string> ns)
+        {
+            int result;
+            m_duration.evalNode(ns, out result);
+            return result;
+            
+        }
+
+        public void CallEndEFF(Dictionary<string, string> ns)
+        {
+            // evaluate end effects
+            for (int i = 0; i < m_endEffects.Length; ++i)            
+                m_endEffects[i].evalNode(ns);
+            
+        }
+        public string GetName()
+        {
+            return this.m_name;
+        }
+
+        public string[] GetParameterTypesNames()
+        {
+            return m_typeParamLink.Values.ToArray();
         }
     }
 }

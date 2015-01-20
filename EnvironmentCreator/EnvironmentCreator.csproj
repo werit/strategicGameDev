@@ -52,6 +52,7 @@
     <Compile Include="Grammars\GStrat_VIS_ReturnType.cs" />
     <Compile Include="Instance.cs" />
     <Compile Include="Pair.cs" />
+    <Compile Include="TriggerEndEff.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="EvaluationNode.cs" />

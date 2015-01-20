@@ -9,20 +9,56 @@ namespace EnvironmentCreator
     public class GameProcessing
     {
         private double m_timeDelta;
-        private List<Pair<int, Pair<double, Action>>> m_effects = new List<Pair<int, Pair<double, Action>>>();
+        private List<TriggerEndEff> m_endEffects = new List<TriggerEndEff>();
+        
         public void Initialize(double delta)
         {
-            this.m_timeDelta = delta;
+            if (delta > 0.0)
+                this.m_timeDelta = delta;
+            else
+                this.m_timeDelta = 0.2;
         }
-        public void AddAction(int duration,Dictionary<string,string> ns,string actionName)
+        public void Start()
         {
-            Action act = null;
-            GroundingParams.m_actions.TryGetValue(actionName, out act);
-            if (act != null)
+
+        }
+        public void Update() {
+            for (int i = 0; i < m_endEffects.Count; ++i)
             {
-                m_effects.Add(new Pair<int, Pair<double, Action>>(duration, new Pair<double, Action>(0.0, act)));
+                m_endEffects[i].NextIteration((int)m_timeDelta);
+            }
+            m_endEffects.RemoveAll(delegate(TriggerEndEff eff) { return eff.GetLeftDur() <= 0; });
+            // evaluate all actions
+
+            foreach (Action act in GroundingParams.m_actions.Values) {
+                string[] paramTypeName = act.GetParameterTypesNames();
+                Types paramType;
+                string[] param = new string[paramTypeName.Length];
+                int[] paramCnt = Enumerable.Repeat(0,paramTypeName.Length).ToArray();
+                for (int i = 0; i < paramTypeName.Length; i++)
+                {
+                    
+                    while (true)
+                    {
+
+                        break;
+                    }
+                    if(GroundingParams.m_types.TryGetValue(paramTypeName[i],out paramType))
+                        for (int j = 0; j < paramType.GetInst().Length; ++j)
+                        {
+                            string s = paramType.GetInst()[j].GetInstanceName();
+                            act.Call(new string[] { s });
+                        }
+
+                }
             }
         }
+
+        public void AddActionEndEff(TriggerEndEff effEnd)
+        {
+            m_endEffects.Add(effEnd);
+        }
+
         public double TimeDelta
         {
             get { return this.m_timeDelta; }

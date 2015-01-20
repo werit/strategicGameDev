@@ -22,7 +22,7 @@ namespace EnvironmentCreator.Gammars
             EvaluationNode[] precond = new EvaluationNode[context.precondition().Count];
             for (int i = 1; i < context.NAME().Count; i += 2)
             {
-                paramNames[(i - 1) / 2] = context.NAME(i).GetText();
+                paramTypes[(i - 1) / 2] = context.NAME(i).GetText();
                 paramNames[(i - 1) / 2] = context.NAME(i + 1).GetText();
             }
 

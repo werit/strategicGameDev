@@ -71,5 +71,10 @@ namespace EnvironmentCreator
                 parent = parent.GetAncestor();
             }
         }
+        public static void AddAction(Action act)
+        {
+            if (!m_actions.ContainsKey(act.GetName()))
+                m_actions.Add(act.GetName(), act);
+        }
     }
 }
