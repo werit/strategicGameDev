@@ -40,17 +40,17 @@ namespace EnvironmentCreator
             Console.WriteLine(visitor.Visit(tree));
 
         }
-        static public IGramChoice getChoiceObj(String objName){
-            IGramChoice choice = null;
-            switch (objName.ToLower())
-	        {
-                case "car" :
-                    choice = new Car();
-                    break;
+        //static public IGramChoice getChoiceObj(String objName){
+        //    IGramChoice choice = null;
+        //    switch (objName.ToLower())
+        //    {
+        //        case "car" :
+        //            choice = new Car();
+        //            break;
                     
-	        }
-            return choice;
-        }
+        //    }
+        //    return choice;
+        //}
         public void start()
         {
             Console.Out.WriteLine("Hello");

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator
 {
-    class Function
+    public class Function
     {
     }
 }

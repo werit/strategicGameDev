@@ -1,3 +1,4 @@
+C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\obj\Debug\DebugDll.csprojResolveAssemblyReference.cache
 C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.exe.config
 C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.exe
 C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.pdb

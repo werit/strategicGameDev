@@ -22,6 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,16 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
-    <Compile Include="Bridge.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="GameProcessing.cs" />
     <Compile Include="Grammars\GStrat_VIS_EvalNode.cs" />
     <Compile Include="Grammars\GStrat_VIS_ReturnType.cs" />
     <Compile Include="Instance.cs" />
-    <Compile Include="Pair.cs" />
+    <Compile Include="ParamGenerator.cs" />
     <Compile Include="TriggerEndEff.cs" />
     <Compile Include="Types.cs" />
-    <Compile Include="Car.cs" />
     <Compile Include="EvaluationNode.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Factory.cs" />

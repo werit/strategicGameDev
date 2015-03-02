@@ -9,8 +9,25 @@ using Antlr4.Runtime.Tree;
 
 namespace EnvironmentCreator.Gammars
 {
+    /// <summary>
+    /// Visitor class processing all rules that hava return type integer or have no return type.\n
+    /// In second case, return value is redundant information and has no meaning.
+    /// Class match to four rules processing:
+    /// <list type="bullet">
+    /// <item><see cref="Types"/></item>
+    /// <item><see cref="Instance"/></item>
+    /// <item><see cref="Action"/></item>
+    /// <item><see cref="Function"/></item>
+    /// </list>
+    /// </summary>
     public class GStrat_VIS_int : GStratBaseVisitor<int>
     {
+        /// <summary>
+        /// Method processing grammar rule matching 'Action'.
+        /// Method during its process creates <see cref="Action"/> class and adds it to <see cref="GroundingParams"/>.
+        /// </summary>
+        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
+        /// <returns>Returned value is irrelevant.</returns>
         public override int VisitAction(GStratParser.ActionContext context)
         {
             string actName = context.NAME(0).GetText();
@@ -41,7 +58,7 @@ namespace EnvironmentCreator.Gammars
                 effs[i] = GameStatData.m_assignNode_VIS.Visit(context.effecte(i));
             }
             Action act = new Action(actName, paramTypes, paramNames, dur, precond, effs, effend);
-
+            GroundingParams.AddAction(act);
             return 0;
             //return base.VisitAction(context);
         }
@@ -53,18 +70,24 @@ namespace EnvironmentCreator.Gammars
             }
             return 0;
         } */
+        /// <summary>
+        /// Method processing grammar rule matching 'FunctionCall'.
+        /// Method during its process creates <see cref="Function"/> class.
+        /// </summary>
+        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
+        /// <returns>Return value is irrelevant.</returns>
         public override int VisitFunctionCall(GStratParser.FunctionCallContext context)
         {
             return base.VisitFunctionCall(context);
         }
-        
-
-        /** @brief Method used when new type is beign defined.
-         * Method reads name ,variables and ancestor of new type.
-         * Then new type is created and added to set of types in GroundingParams::m_types.
-         * @throws UnknownAncestorType when unknown ancestor was defined or ancestor is defined later then this type.
-         * @param context of grammar.
-         */
+        /// <summary>
+        /// Method processing grammar rule matching 'NewType'.\n
+        /// Method reads name ,variables and ancestor of new type.\n
+        /// Then new type is created and added to set of types in <see cref="GroundingParams.m_types"/>.
+        /// </summary>
+        /// <exception cref="UnknownAncestorType">UnknownAncestorType when unknown ancestor was defined or ancestor is defined later then this type.</exception>
+        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
+        /// <returns>Return value is irrelevant.</returns>
         public override int VisitNewType(GStratParser.NewTypeContext context)
         {
 
@@ -88,13 +111,15 @@ namespace EnvironmentCreator.Gammars
             GroundingParams.m_types.Add(typ.GetName(), typ);
             return 0;
         }
-
-        /** @brief Method used when new instance of type is beign created.
-         * Method reads name of type and prepares instances with selected names.
-         * Then new type is created and added to set of types in GroundingParams::m_types.
-         * @throws UnknownAncestorType when unknown ancestor was defined or ancestor is defined later then this type.
-         * @param context of grammar.
-         */
+        /// <summary>
+        /// Method processing grammar rule matching 'NewType'.\n
+        /// Method used when new instance of type is beign created.\n
+        /// Method reads name of type and prepares instances with selected names.\n
+        /// Then new type is created and added to set of types in <see cref="GroundingParams.m_types"/>.
+        /// </summary>
+        /// <exception cref="UnknownAncestorType">When unknown ancestor was defined or ancestor is defined later then this type.</exception>
+        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
+        /// <returns>Return value is irrelevant.</returns>
         public override int VisitNewInstances(GStratParser.NewInstancesContext context)
         {
             Types type = null;

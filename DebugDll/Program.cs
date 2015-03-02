@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using EnvironmentCreator;
 
 
+
 namespace DebugDll
 {
     class Program
     {
         static void Main(string[] args)
         {
+            GameStatData.game.Initialize(0.2, "C:\\ANTLR\\Grammars\\GStrat.g4");
             //Factory fctr = new Factory();
             //IGramChoice choice = Factory.getChoiceObj("car");
             //Console.WriteLine(choice.Buy());

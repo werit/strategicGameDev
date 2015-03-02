@@ -6,25 +6,51 @@ using System.Threading.Tasks;
 
 namespace EnvironmentCreator
 {
+    /// <summary>
+    /// Class stores:
+    /// <list type="bullet">
+    /// <item><see cref="Types"/></item>
+    /// <item><see cref="Instance"/></item>
+    /// <item><see cref="Action"/></item>
+    /// </list>
+    /// Class also encapsulates work with all <see cref="Instance"/>'s variables.\n
+    /// This class "grounds" them. Stores them and contain methods for their usage and change.
+    /// </summary>
     public static class GroundingParams
     {
-        /** @brief Variable storing all integer variables of all instances
-         * 
-         */
+        
+        /// <summary>
+        /// Variable storing all integer variables of all <see cref="Instance"/>s.
+        /// </summary>
         public static Dictionary<string,Dictionary<string, int>> m_InstanceIntegerVar;
-        /** @brief Variable storing all boolean variables of all instances
-         * 
-         */
+        /// <summary>
+        /// Variable storing all boolean variables of all <see cref="Instance"/>s.
+        /// </summary>
         public static Dictionary<string,Dictionary<string, bool>> m_InstanceBoolVar;
-        /**
-         * public storage for all instances.
-         */
+        /// <summary>
+        /// Public storage for all <see cref="Instance"/>s.
+        /// </summary>
         public static Dictionary<string, Instance> m_instances;
-        /** @brief Variable storing type name and type.
-         * 
-         */
+        /// <summary>
+        /// Variable storing couple <see cref="Types"/>'s name in string format and <see cref="Type"/>.
+        /// </summary>
         public static Dictionary<string, Types> m_types;
+        /// <summary>
+        /// Variable storing pair name of <see cref="Action"/> in string format and <see cref="Action"/> corresponding to this name.
+        /// </summary>
         public static Dictionary<string, Action> m_actions;
+        /// <summary>
+        /// Variable storing pair name of <see cref="Function"/> in string format and <see cref="Function"/> corresponding to this name.
+        /// </summary>
+        public static Dictionary<string, Function> m_functions;
+        /// <summary>
+        /// Static constructor, which initialize storage for 
+        /// <list type="bullet">
+        /// <item><see cref="GroundingParams.m_types"/></item>
+        /// <item><see cref="GroundingParams.m_instances"/></item>
+        /// <item><see cref="GroundingParams.m_actions"/></item>
+        /// </list>
+        /// </summary>
         static GroundingParams()
         {
             m_InstanceBoolVar = new Dictionary<string,Dictionary<string, bool>>();
@@ -39,13 +65,13 @@ namespace EnvironmentCreator
             m_instances = new Dictionary<string, Instance>();
             m_actions = new Dictionary<string, Action>();
         }
-
-        /** @brief Method grounding instance variables.
-         * Method takes each variable of type and recursively of parent type till root type and creates them with prexif as instance name in the 
-         * 
-         * m_InstanceBoolVar or m_InstanceIntegerVar, depending if it is variable of type boolean or int.
-         * 
-         */
+        /// <summary>
+        /// Method grounding <see cref="Instance"/>'s variables.\n
+        /// Method takes each variable of <see cref="Types"/> and ancestor <see cref="Types"/>. This is done recursively till <see cref="Types.m_defaultAncestor"/> of <see cref="Types"/>\n
+        /// and creates them with prexif as <see cref="Instance"/>'s name in the \n
+        /// <see cref="GroundingParams.m_InstanceBoolVar"/> or <see cref="GroundingParams.m_InstanceIntegerVar"/>, depending if it is variable of type boolean or integer.
+        /// </summary>
+        /// <param name="inst">Inastance which parameters are "grounded".</param>
         public static void GroundInstance(Instance inst)
         {
             Types parent = inst.GetInstanceType();
@@ -71,6 +97,10 @@ namespace EnvironmentCreator
                 parent = parent.GetAncestor();
             }
         }
+        /// <summary>
+        /// Method handles addidng new action to set of all actions in the simulation.
+        /// </summary>
+        /// <param name="act">Action to be added to <see cref="GroundingParams.m_actions"/></param>
         public static void AddAction(Action act)
         {
             if (!m_actions.ContainsKey(act.GetName()))

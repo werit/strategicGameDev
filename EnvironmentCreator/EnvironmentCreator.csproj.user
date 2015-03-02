@@ -3,5 +3,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\DebugDll\bin\Debug\DebugDll.exe</StartProgram>
+    <StartArguments>/doc</StartArguments>
   </PropertyGroup>
 </Project>
