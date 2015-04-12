@@ -1,0 +1,2479 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EnvironmentCreator</name>
+    </assembly>
+    <members>
+        <member name="T:EnvironmentCreator.Action">
+            <summary>
+            Class representing action of any object.
+            Action consist of 
+            <list type="bullet">
+            <item><description>set of preconditions that must be fulfilled for action to by executed.</description></item>
+            <item><description>duration\nDuration between immediate effects and end effects of action.</description></item>
+            <item><description>effects of action(immediate).</description></item>
+            <item><description>end effects of action.</description></item>
+            </list>
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_name">
+            <summary>
+            String representing name of action.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_duration">
+            <summary>
+            Variable storing duration between immediate effects and end effects.
+            Value of duration is in miliseconds and this value is 
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_preconditions">
+            <summary>
+            Variable storing set of preconditions which must be evaluated to true, 
+            for action to be uasble on tuple of parameters.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_startEffects">
+            <summary>
+            Variable storing set of effects, that are evaluated after action is used 
+            and all preconditions return true.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_endEffects">
+            <summary>
+            Variable storing set of effects, that are evaluated after passing of duration of action.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_typeParamLink">
+            <summary>
+            First parameter represents action parameter name.
+            Secnd parameter represents action parametr type. 
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Action.m_paramPos">
+            <summary>
+            On index 'i' is name of parameter at i-th position. 
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Action.#ctor">
+            <summary>
+            Class constructor. 
+            Creates action withou any effects or any preconditions.
+            Might by used for test pourposes.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Action.#ctor(System.String,System.String[],System.String[],EnvironmentCreator.EvaluationNode,EnvironmentCreator.EvaluationNode[],EnvironmentCreator.EvaluationNode[],EnvironmentCreator.EvaluationNode[])">
+            <summary>
+            Constructor of action. Creates action which can be executed in simulation.
+            </summary>
+            <param name="name">Name identifier of action.</param>
+            <param name="paramTypes">Array characterizing name of type of each action's argument.</param>
+            <param name="paramNames">Array characterizing name of each action's argument.</param>
+            <param name="duration">Duration between effects and end effects. Duration triggers only if action is admissible.</param>
+            <param name="precond">Set of preconditions that have to be met for action to be admissible.</param>
+            <param name="startEff">Effects executed when action is admissible.</param>
+            <param name="endEff">Effects executed when action is admissible and <paramref name="duration"/> passed.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Action.Call(System.String[])">
+            <summary>
+            Method handling evaluation of action in every update of a game engine.
+            Method substitute parameters names for names of instances and then evaluate this action.
+            </summary>
+            <param name="parameters"> Array of names of instances of types corresponding to the parameters of the action.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Action.GetDuration(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method determining how much time has to pass between start and end effects.
+            </summary>
+            <param name="ns">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Time in miliseconds between effects of this action with current <paramref name="ns"/>.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Action.CallEndEFF(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method handling execution of end effects of action with parameters <paramref name="ns"/>.
+            </summary>
+            <param name="ns">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Action.GetName">
+            <summary>
+            Method for access private variable storing name of action.
+            </summary>
+            <returns>Name of action.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Action.GetParameterTypesNames">
+            <summary>
+            Action parameters consist of parameter type and parameter name.
+            Method gives access to name string representation of name of type.
+            </summary>
+            <returns>Array of string representation of each type name.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.Function">
+            <summary>
+            Class used as base for all user defined functions that are used in simulation.
+            User will inherit from this clas and override method <see cref="M:EnvironmentCreator.Function.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)"/> 
+            or <see cref="M:EnvironmentCreator.Function.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)"/>.
+            If it returns <see cref="F:EnvironmentCreator.GameStatData.NodeReturnType.BOOL"/> then override for <see cref="M:EnvironmentCreator.Function.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)"/> is needed.
+            In case it returns <see cref="F:EnvironmentCreator.GameStatData.NodeReturnType.INT"/> then override for <see cref="M:EnvironmentCreator.Function.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)"/> is needed.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.EvaluationNode">
+            <summary>
+             Main class representing all nodes used in evaluation tree of expresions.
+             Class might be used as base for assign nodes, plus nodes and others.
+             Class consist of methods that determine type of node, for integer or boolean evaluation and\n
+             also evaluation methods for booth types.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Base method for evaluation node that return neither integer nor boolean value.
+            Method throws exception if it is not redefined.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.isInstanceNode">
+            <summary>
+            Method says true if node is IdNode and has two part name.
+            Which means that name contains also instance name and name of parameter.
+            Like "target.HP", where target is speudo instance in action and HP is actual variable on some instance which corresponds to target.
+            </summary>
+            <returns>Returns true if <see cref="T:EnvironmentCreator.IDNode"/>.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Base method for evaluation node that return boolean value.
+            Method throws exception if method is not redefined in descendant and method is called on this instance.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Parameter returns true or false depending on it's evaluation.</param>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Base method for evaluation node that return integer value.
+            Method throws exception if method is not redefined in descendant and method is called on this instance.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Parameter returns integer depending on it's evaluation.</param>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method gives information about return type of node.\n
+            Return types are defined in <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.
+            This must be redefined in descendant types.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> depending on evaluation node.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.isReturnTypeOfBothBool(EnvironmentCreator.EvaluationNode,EnvironmentCreator.EvaluationNode,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method determines if evaluation nodes passed as parameters have both return type boolean.\n
+            It should be used to check if user used right parameters for evaluation of booleans.\n
+            For example if we are comparing boolean to variable of <see cref="T:EnvironmentCreator.Instance"/>, then variable have to be of boolean type.
+            </summary>
+            <param name="node1">First node which is tested if it returns boolean value.</param>
+            <param name="node2">Second node which is tested if it returns boolean value.</param>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.isReturnTypeOfBothInt(EnvironmentCreator.EvaluationNode,EnvironmentCreator.EvaluationNode,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method determines if evaluation nodes passed as parameters have both return type integer.\n
+            It should be used to check if user used right parameters for evaluation of integers.\n
+            For example if we are comparing integer to a variable of <see cref="T:EnvironmentCreator.Instance"/>, then variable have to be of integer type.
+            </summary>
+            <param name="node1">First node which is tested if it returns integer value.</param>
+            <param name="node2">Second node which is tested if it returns integer value.</param>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EnvironmentCreator.EvaluationNode.isReturnTypeSame(EnvironmentCreator.EvaluationNode,EnvironmentCreator.EvaluationNode,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method tests if <see cref="T:EnvironmentCreator.EvaluationNode"/>s passed as parameters returns values of the same type.\n
+            Return types tested are from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.
+            </summary>
+            <param name="node1">First node which is tested if it returns same type as second node.</param>
+            <param name="node2">Second node which is tested if it returns same type as first node.</param>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns true if both nodes passed as parameter return same type. Otherwise false is returned.</returns>
+        </member>
+        <member name="F:EnvironmentCreator.Function.m_functionId">
+            <summary>
+            String representation of function identifier.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Function.m_paramPos">
+            <summary>
+            On index 'i' is name of parameter at i-th position. 
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Function.#ctor(System.String)">
+            <summary>
+            Constructor creates new function with name passed in parametert.
+            </summary>
+            <param name="fnName">String identifier of function.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Function.GetFnName">
+            <summary>
+            Method returns string representation of identifier of function.
+            </summary>
+            <returns>String representation identifier of function.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Function.FnCopy(System.String[])">
+            <summary>
+            Method creates new copy of function. Parameter <paramref name="paramPos"/> stores information which
+            parameter was on which position in function.
+            </summary>
+            <param name="paramPos">String array have on i-th position name of i-th parameter of this function.</param>
+            <returns>New instance of this function with set names and positions of parameters.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Function.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Model function that has to be overwritten if function returns boolean value.
+            </summary>
+            /// <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="retVal">True or false, depending of function implementation.</param>
+            <exception cref="T:EnvironmentCreator.FunctionNotSupportedExcp">This method, if not redefined, throws this exception.</exception>
+        </member>
+        <member name="M:EnvironmentCreator.Function.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Model function that has to be overwritten if function returns integer value.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Integer, depending of function implementation.</param>
+            <exception cref="T:EnvironmentCreator.FunctionNotSupportedExcp">This method, if not redefined, throws this exception.</exception>
+        </member>
+        <member name="T:EnvironmentCreator.Close_Range">
+            <summary>
+            Function determining if two game objects passed as parameters are in close range.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Close_Range.#ctor">
+            <summary>
+            Constructor calls constructor of <see cref="T:EnvironmentCreator.Function"/> and creates function identified by name 'close_range'
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Close_Range.FnCopy(System.String[])">
+            <summary>
+            Method creates new copy of function. Parameter <paramref name="paramPos"/> stores information which
+            parameter was on which position in function.
+            </summary>
+            <param name="paramPos">String array have on i-th position name of i-th parameter of this function.</param>
+            <returns>New instance of this function with set names and positions of parameters.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Close_Range.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Evaluation method. Method checks if two objects are near each other.
+            Those two objects are passed in container <paramref name="mapParam"/> in form of string representation of names of <see cref="T:EnvironmentCreator.Instance"/>s.
+            Container contain original name matched in grammar and <see cref="T:EnvironmentCreator.Instance"/> name, which was substitued for it.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="retVal">True if object 1 is in range of object 2. False is returned otherwise.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Close_Range.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            This function returns boolean. Therefore method returns boolean node type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns <see cref="F:EnvironmentCreator.GameStatData.NodeReturnType.BOOL"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.GameProcessing">
+            <summary>
+            Class consist of methods preparing simulation and evaluating it in every tick of game engine.
+            Class also handes evaluation of end effects of <see cref="T:EnvironmentCreator.Action"/>s.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameProcessing.m_isInitialized">
+            <summary>
+            internal variable storing information whether class was initialized.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameProcessing.m_inputFile">
+            <summary>
+            Variable storing path information to input file.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameProcessing.m_timeDelta">
+            <summary>
+            Internal storage for time delta passed between two upadtes of game engine.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameProcessing.m_endEffects">
+            <summary>
+            Internal storage of effects of actions that have to be evaluated when duration pass.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameProcessing.m_parameterGenerator">
+            <summary>
+            Internal storage for class which generates parameters of <see cref="T:EnvironmentCreator.Action"/>s.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.GameProcessing.GetInstanceNamesOfTypeRecursively(EnvironmentCreator.Types)">
+            <summary>
+            Method which returns list of names of Instances of <paramref name="type"/> passed as argument.
+            </summary>
+            <param name="type">Parameter is <see cref="T:System.Type"/> whose <see cref="T:EnvironmentCreator.Instance"/>s will be used in <see cref="T:EnvironmentCreator.Action"/> as its parameters.</param>
+            <returns>List of all possible instances and also instances of descendants.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.GameProcessing.Initialize(System.Double,System.String)">
+            <summary>
+            Method initialize by defining grammar which will be processed.
+            Grammar is definition for all <see cref="T:EnvironmentCreator.Types"/>,<see cref="T:EnvironmentCreator.Instance"/> and <see cref="T:EnvironmentCreator.Action"/> strunctures.
+            Method also setting update time of game engine.
+            </summary>
+            <param name="delta">Time between two fixed updates in game engine.</param>
+            <param name="inputFile">File of consisting of input corresponding to grammar definition.</param>
+        </member>
+        <member name="M:EnvironmentCreator.GameProcessing.Start">
+            <summary>
+            Method process grammar and defines all structures.
+            Then world with structures and actions is created by user input.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.GameProcessing.Update(System.Double)">
+            <summary>
+            Method handgling behaviour of world in every tick of game engine.
+            This method have to be called in fixedUpdate of game engine.
+            </summary>
+            <param name="delta">time delta of two updates of game engine.</param>
+        </member>
+        <member name="M:EnvironmentCreator.GameProcessing.AddActionEndEff(EnvironmentCreator.TriggerEndEff)">
+            <summary>
+            Method add end effects of <see cref="T:EnvironmentCreator.Action"/>s, that has been evaluated.
+            </summary>
+            <param name="effEnd">End effects to be evaluated with time left to their evaluation.</param>
+        </member>
+        <member name="P:EnvironmentCreator.GameProcessing.TimeDelta">
+            <summary>
+            Property used to set time between updates of game engine.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode">
+            <summary>
+            Visitor class of grammar.
+            Class process all grammar expresions that are in form of <see cref="T:EnvironmentCreator.EvaluationNode"/>.
+            These grammar expresion consist 
+            <list type="bullet">
+            <item>equations</item>
+            <item>assigns</item>
+            <item>comparisions</item>
+            </list>
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.GStratBaseVisitor`1">
+            <summary>
+            This class provides an empty implementation of <see cref="T:EnvironmentCreator.Gammars.IGStratVisitor`1"/>,
+            which can be extended to create a visitor which only needs to handle a subset
+            of the available methods.
+            </summary>
+            <typeparam name="Result">The return type of the visit operation.</typeparam>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.IGStratVisitor`1">
+            <summary>
+            This interface defines a complete generic visitor for a parse tree produced
+            by <see cref="T:EnvironmentCreator.Gammars.GStratParser"/>.
+            </summary>
+            <typeparam name="Result">The return type of the visit operation.</typeparam>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.effecte"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.CallFn"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitRoot(EnvironmentCreator.Gammars.GStratParser.RootContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.root"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.@int"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.AddSub"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.PrecondExpr"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.CallFnPrecond"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.parenth"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.id"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.functionCall"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.NewType"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.AssignExpr"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.ident"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.action"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.MulDivMod"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.NewVariable"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratVisitor`1.VisitNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.NewInstances"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.effecte"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.CallFn"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitRoot(EnvironmentCreator.Gammars.GStratParser.RootContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.root"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.@int"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.AddSub"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.PrecondExpr"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.CallFnPrecond"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.parenth"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.id"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.functionCall"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.NewType"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.AssignExpr"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.ident"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.action"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.MulDivMod"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.NewVariable"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseVisitor`1.VisitNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Visit a parse tree produced by <see cref="!:GStratParser.NewInstances"/>.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)"/>
+            on <paramref name="context"/>.
+            </para>
+            </summary>
+            <param name="context">The parse tree.</param>
+            <return>The visitor result.</return>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Method processing visiting of end effect of action.
+            Start and end effects are the same, therefore this method pass processing to method which handles effect.\n
+            <see cref="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)"/> or <see cref="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)"/>.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Node which represents one end effect.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Method processing visiting of assign expresion of action.
+            Left side consist of node whom will be assigned value and right contain assigned value.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Node which represents one assign expresion.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Method processing visiting of effect function of <see cref="T:EnvironmentCreator.Action"/>.
+            Method returns node which represents function, which after evaluation returns integer.
+            This function is way to affect game simulation when grammar cannot fulfill this task.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Integer.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Method processing visiting of precondition function of action.
+            Method returns node which represents function, which after evaluation returns boolean.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Node which represents one precondition function call.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Method processing grammar rule matching 'FunctionCall'.
+            Method during its process takes reference to <see cref="T:EnvironmentCreator.Function"/> class.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Evaluation node representing function.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Method process visiting addition or subtraction in expression of action.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Node which represents addition or subtraction of two <see cref="T:EnvironmentCreator.EvaluationNode"/>.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Method process visiting multiplication, division or modulation in expression of action.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Node which represents multiplication, division or modulation of two <see cref="T:EnvironmentCreator.EvaluationNode"/>.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+             <summary>
+             Method creating Identification evaluation node.\n
+             Method return two types of identifier. One is just containing variable. Second identifier takes name of instance of class and parameter of this class.\n
+             For example function header defined for function 'fn', class 'Soldier' with variable 'bulletCount' : fn(Soldier shooter)
+            
+             identifier referencing to bulletCount of shooter will look like shooter.bulletCount (during runetime for shooter will be assigned real instance).
+             </summary>
+             <param name="context">Parameter of parser context of currently processed tree part.</param>
+             <returns>Method returns <see cref="T:EnvironmentCreator.IDNode"/> with stored identifier.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Method process visiting 'ident' rule of grammar.\n
+            This rule is processed as identifier, therefore method <see cref="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitId(EnvironmentCreator.Gammars.GStratParser.IdContext)"/> is called.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Method returns <see cref="T:EnvironmentCreator.IDNode"/> with stored identifier.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Method process visiting 'PrecondExpr' rule of grammar. It is <see cref="T:EnvironmentCreator.Action"/> rule.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Method returns <see cref="T:EnvironmentCreator.BinaryCompareOp"/> containing compare expresion and comparator.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Method processing grammar rule matching integer.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Method returns <see cref="T:EnvironmentCreator.IntNode"/> with stored integer value.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_EvalNode.VisitParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Method processing grammar rule matching parenthesis.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Method returns internal expresion in form of tree consisting of <see cref="T:EnvironmentCreator.EvaluationNode"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.GStrat_VIS_ReturnType">
+            <summary>
+            Visitor class of grammar.
+            Class process all grammar rules that hame some return value.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Gammars.GStrat_VIS_ReturnType.m_variableName">
+            <summary>
+            Variable storing name of variable which is mathed by grammar rule.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_ReturnType.GetVarName">
+            <summary>
+            Method give acess to the name of last processed 'variable' mathed by grammar rule.
+            </summary>
+            <returns>Name of last processed variable in string format.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_ReturnType.VisitNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Method processing grammar rule matching NewVariable.
+            Method stores name of variable in internal storage and return type of that variable.
+            Variable name can be acessed throught method <see cref="M:EnvironmentCreator.Gammars.GStrat_VIS_ReturnType.GetVarName"/>
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Method returns information of processed variable return type in form of <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> class.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.Instance">
+            <summary>
+            Class represents instance of <see cref="T:EnvironmentCreator.Types"/>.
+            Class stores basic information about it's type, name and
+            encapsultes access to these.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Instance.m_instanceOf">
+            <summary>
+            Variable storing pointer to <see cref="T:EnvironmentCreator.Types"/>, which is type of this instance.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Instance.m_instName">
+            <summary>
+            Variable storing string representation of name of this instance.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Instance.#ctor(System.String,EnvironmentCreator.Types)">
+            <summary>
+            Instance constructor takes two parameters and creates new instance with name <paramref name="name"/> and type <paramref name="type"/>.
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+        </member>
+        <member name="M:EnvironmentCreator.Instance.GetTypeName">
+            <summary>
+            Method for getting <see cref="T:EnvironmentCreator.Types"/>'s name of this instance.
+            </summary>
+            <returns>String representation of name of <see cref="T:EnvironmentCreator.Types"/> of this instance.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Instance.GetInstanceType">
+            <summary>
+            Method returning type of instance in form of pointer to <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+            <returns>Pointer to type of this instance.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Instance.GetInstanceName">
+            <summary>
+            Method returning string representation of name of this instance.
+            </summary>
+            <returns>Name of this instance.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.ParamGenerator">
+            <summary>
+            Class designed to perform parameter generating.
+            Class consist of inicialization <see cref="M:EnvironmentCreator.ParamGenerator.GenerateParamFromType(System.Collections.Generic.List{System.String}[])"/> and parameter 
+            returning <see cref="M:EnvironmentCreator.ParamGenerator.NextParamSet"/> method. Class generates tuples of parameters(<see cref="T:EnvironmentCreator.Instance"/>'s names)
+            for <see cref="T:EnvironmentCreator.Action"/>s in world.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.ParamGenerator.m_instancesOfTypes">
+            <summary>
+            Variable represents array of arrays, where first index is order of parameter of some <see cref="T:EnvironmentCreator.Action"/>
+            and second index is exact instance, that can be inserted into this parameter.
+            </summary>
+            <example>Imagine <see cref="T:EnvironmentCreator.Action"/> shoot(Person fighter,Weapon gun) and  this variable will be 2D array {{Rmbo,Robocop},{Glock,Desert_eagle}}
+            where Rambo and  Robocop are <see cref="T:EnvironmentCreator.Instance"/>s of 'Person' and they correspond to first parameter so they are at first index(0).
+            similary Glock and Desert_eagle are <see cref="T:EnvironmentCreator.Instance"/>s of 'Weapon' and they have second positionm therefore correspond to second action's parameter.
+            </example>
+        </member>
+        <member name="F:EnvironmentCreator.ParamGenerator.m_paramCounter">
+            <summary>
+            Counter storing information, which tuple of <see cref="T:EnvironmentCreator.Instance"/>s in <see cref="F:EnvironmentCreator.ParamGenerator.m_instancesOfTypes"/> is going to be checked.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.ParamGenerator.m_hasNextValue">
+            <summary>
+            Information if exists another tuple of <see cref="T:EnvironmentCreator.Instance"/>s for <see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.ParamGenerator.GenerateParamFromType(System.Collections.Generic.List{System.String}[])">
+            <summary>
+            Method initialize generator of tuples of <see cref="T:EnvironmentCreator.Instance"/>s for some <see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+            <param name="instancesOfTypes">2D array of names of <see cref="T:EnvironmentCreator.Instance"/>s corresponding to parameters of some <see cref="T:EnvironmentCreator.Action"/>.
+            List storing arrays of names of instances.</param>
+        </member>
+        <member name="M:EnvironmentCreator.ParamGenerator.NextParamSet">
+            <summary>
+            Method returns tuplne of <see cref="T:EnvironmentCreator.Instance"/> names. For each parameter of <see cref="T:EnvironmentCreator.Action"/> one <see cref="T:EnvironmentCreator.Instance"/> name.
+            Method returns array until last possible combination of <see cref="T:EnvironmentCreator.Instance"/> names for each parameter is tested.
+            </summary>
+            <returns>String array of names of <see cref="T:EnvironmentCreator.Instance"/>s, which was passed to <see cref="M:EnvironmentCreator.ParamGenerator.GenerateParamFromType(System.Collections.Generic.List{System.String}[])"/></returns>
+        </member>
+        <member name="T:EnvironmentCreator.TriggerEndEff">
+            <summary>
+            Class encapsulating triggering end effects of <see cref="T:EnvironmentCreator.Action"/>.
+            Class stores latter
+            <list type="bullet">
+            <item><description><see cref="T:EnvironmentCreator.Action"/> which end effects are executed.</description></item>
+            <item><description>Duration which must pass before executing end effects.</description></item>
+            <item><description>Name representing parameter name of <see cref="T:EnvironmentCreator.Action"/> and instance name attributable to that parameter.</description></item>
+            </list>
+            Method <see cref="M:EnvironmentCreator.TriggerEndEff.NextIteration(System.Double)"/> is used for updating duration left to execution of end effects.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.TriggerEndEff.m_waitDuration">
+            <summary>
+            Time left to execution of end effects of <see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.TriggerEndEff.m_act">
+            <summary>
+            <see cref="T:EnvironmentCreator.Action"/> which end effects are about to be executed.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.TriggerEndEff.m_namespace">
+            <summary>
+            Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.TriggerEndEff.AddNewAct(EnvironmentCreator.Action,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method used when setting which <see cref="T:EnvironmentCreator.Action"/>'s end effects should be executed\n
+            and names of instances for parameter of <see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+            <param name="act"><see cref="T:EnvironmentCreator.Action"/> which end effects should be executed.</param>
+            <param name="ns">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.TriggerEndEff.#ctor(EnvironmentCreator.Action,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Constructor create's class to execute end effects of <see cref="T:EnvironmentCreator.Action"/> passed in aprameter.
+            </summary>
+            <param name="act"><see cref="T:EnvironmentCreator.Action"/> which end effects should be executed.</param>
+            <param name="ns">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.TriggerEndEff.NextIteration(System.Double)">
+            <summary>
+            Method correct time to execution of <see cref="T:EnvironmentCreator.Action"/>'s end effects depending time passed as parameter <paramref name="delta"/>.
+            When duration between <see cref="T:EnvironmentCreator.Action"/>'s effects reach 0, then method starts end effects.
+            Method sjould be called in every update of game engine.
+            </summary>
+            <param name="delta">Time passed in engine. In seconds</param>
+        </member>
+        <member name="M:EnvironmentCreator.TriggerEndEff.GetLeftDur">
+            <summary>
+            Method return time left between start and end effects of <see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+            <returns>When method return's number greater then 0, end effects wait. There fore they are not executed.\n
+            When 0 or less is returned. End effects were executed.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.Types">
+            <summary>
+            Class representing types of instances used in simulation.\n
+            For example you have type tree and it's instance might be spurce or beech.\n
+            Each instance in similation have some type.\n
+            Types implement inheritance structure. Therefore any property of parent type, will also have instance of descendant type.\n
+            For example descndat type of tree is conifer. Tree has property of root. Instance of conifer, pine, will also have property of root\n
+            without necessity of it's defining in type conifer.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_nonameCnt">
+            <summary>
+            Internal counter of noname types.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_ancestor">
+            <summary>
+            Reference to ancestor of type.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_desc">
+            <summary>
+            Internal storage for all descendants of this type
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_defaultAncestor">
+            <summary>
+            Default ancestor of all types.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Types.GetDesc">
+            <summary>
+            Method creates copy of descendants and returns this copy. Therefore changes in array will not affect source.
+            </summary>
+            <returns>Method returns array of descendants of this type.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Types.AddDesc(EnvironmentCreator.Types)">
+            <summary>
+            Add descendant passed as parameter to list of descendants of this type.
+            </summary>
+            <param name="additionDesc">Descendant which is added to set of descendants of this type.</param>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_typeInstances">
+            <summary>
+            Pointer to all instances of this type.\nDo not contain instances of descendants.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_intVariables">
+            <summary>
+            Variable containing names of all integer values of this type and their values.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_boolVariables">
+            <summary>
+            Variable containing names of all boolean values of this type and their values.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.Types.m_name">
+            <summary>
+            Variable storing type name.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Types.GetInst">
+            <summary>
+             Method creates copy of list of instances and returns this copy. Therefore changes in array will not affect source.
+            </summary>
+            <returns>Method returns array of instances of this type.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Types.AddInst(EnvironmentCreator.Instance)">
+            <summary>
+            Add instance passed as parameter to list of instances.
+            </summary>
+            <param name="newInstance">New <see cref="T:EnvironmentCreator.Instance"/> to be added as instance of this type.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Types.AddInst(EnvironmentCreator.Instance[])">
+            <summary>
+            Add instance passed as parameter to list of instances.
+            </summary>
+            <param name="newInstances">New <see cref="T:EnvironmentCreator.Instance"/> to be added as instance of this type.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Types.#cctor">
+            <summary>
+            Static constructor to inicialize static variables:
+            <list type="bullet">
+            <item>m_defaultAncestor</item>
+            <item>m_nonameCnt</item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Types.#ctor">
+            <summary>
+            Constructor inicialize array for names of integer and boolean variables of <see cref="T:EnvironmentCreator.Types"/>.
+            Also ancestor of <see cref="T:EnvironmentCreator.Types"/> is set.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Types.#ctor(System.String,EnvironmentCreator.Types,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String})">
+            <summary>
+            Constructor inicialize array for names of integer and boolean variables of <see cref="T:EnvironmentCreator.Types"/>.\n
+            Also ancestor of <see cref="T:EnvironmentCreator.Types"/> is set. In case of null ancestor, it is default ancestor.\n
+            Else, <see cref="T:EnvironmentCreator.Types"/> passed as parameter is set to be ancestor of this <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+            <param name="name">Name of type.</param>
+            <param name="ancestor">Ancestor of this <see cref="T:EnvironmentCreator.Types"/>.</param>
+            <param name="intVariables">Array of integer variables of this <see cref="T:EnvironmentCreator.Types"/>.</param>
+            <param name="boolVariables">Array of boolean variables of this <see cref="T:EnvironmentCreator.Types"/>.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Types.GetName">
+            <summary>
+            Method return string representation of name of type stored in private variable.
+            </summary>
+            <returns>Name of <see cref="T:EnvironmentCreator.Types"/> in string representation.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Types.GetAllIntVar">
+            <summary>
+            Method returns copy of array of all names of integer variables of this <see cref="T:EnvironmentCreator.Types"/>.
+            Therefore change in array will not affect names of variables of this <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+            <returns>Array of all integer variable names.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Types.GetAllBoolVar">
+            <summary>
+            Method returns copy of array of all names of boolean variables of this <see cref="T:EnvironmentCreator.Types"/>.
+            Therefore change in array will not affect names of variables of this <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+            <returns>Array of all boolean variable names.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Types.GetAncestor">
+            <summary>
+            Method returning ancestor of this <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+            <returns>Pointer to ancestor of this <see cref="T:EnvironmentCreator.Types"/></returns>
+        </member>
+        <member name="T:EnvironmentCreator.IntNode">
+            <summary>
+            Class encapsulating storage of integer value.
+            Class redefine all integer associated execution methods.
+            Sole purpose of class is returning integer stored in it while being able to store this integer in tree structure of <see cref="T:EnvironmentCreator.EvaluationNode"/>,/n
+            which is recursively evaluated throught virtual methods. 
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.IntNode.m_value">
+            <summary>
+            Internal storage of integer value.
+            This value is returned, when node is evaluated.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.IntNode.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Override parent method and returns data type corresponding to integer value;
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> coresponding to integer. Therefore <see cref="F:EnvironmentCreator.GameStatData.NodeReturnType.INT"/>.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.IntNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method overrides parent method and make class useable for evaluation, in which integer is returned.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Vaule is inicialized to integer value of this node.</param>
+        </member>
+        <member name="M:EnvironmentCreator.IntNode.SetValue(System.Int32)">
+            <summary>
+            Method sets integer value of this node to <paramref name="value"/>.
+            </summary>
+            <param name="value">Integer value which will be stored in this node.</param>
+        </member>
+        <member name="M:EnvironmentCreator.IntNode.#ctor(System.Int32)">
+            <summary>
+            Constructor creating node with int value passed in parameter as return value during evaluation of node.
+            </summary>
+            <param name="value">Value of node.</param>
+        </member>
+        <member name="T:EnvironmentCreator.BinaryOp">
+            <summary>
+            Class encapsulating evaluation of binary node.\n
+            Class adds internal storage for two <see cref="T:EnvironmentCreator.EvaluationNode"/>s and method which handls setting those nodes.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.BinaryOp.m_lNode">
+            <summary>
+            Left node of binary node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.BinaryOp.m_rNode">
+            <summary>
+            right node of binary node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.BinaryOp.SetNodes(EnvironmentCreator.EvaluationNode,EnvironmentCreator.EvaluationNode)">
+            <summary>
+            Method sets passed parameters as left and right nodes of this binary node.
+            </summary>
+            <param name="lNode">Parameter of left node of binary node.</param>
+            <param name="rNode">Parameter of right node of binary node.</param>
+        </member>
+        <member name="T:EnvironmentCreator.BinaryMathOp">
+            <summary>
+            Class encapsulating evaluation of mathematical operation of binary node.<see cref="T:EnvironmentCreator.BinaryOp"/>\n
+            Supported mathematical operations are <see cref="T:EnvironmentCreator.GameStatData.AritmeticOperators"/> .\n
+            Class redefines <see cref="M:EnvironmentCreator.BinaryMathOp.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})"/> to integer value.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.BinaryMathOp.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Redefinition of ancestor method.\n
+            Math operation can return only integer, therefore redefinition is set to integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Integer value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.BinaryMathOp.result(System.Collections.Generic.Dictionary{System.String,System.String},EnvironmentCreator.GameStatData.AritmeticOperators)">
+            <summary>
+            Method determines value of this node depending on operation type of node, which is passed as parameter <paramref name="op"/>\n
+            and values of child nodes, which are evaluated by this method.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="op">Methematical operation of node,which is applied to result values of children nodes.</param>
+            <returns></returns>
+        </member>
+        <member name="T:EnvironmentCreator.PlusNode">
+            <summary>
+            Class defining evaluation of addition of two numbers.\n
+            Class redefines evaluation method of node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.PlusNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method redefining ancestor method, which returns integer value of addition between left and right children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Value of node after addition operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.MinusNode">
+            <summary>
+            Class defining evaluation of subtraction of two numbers.\n
+            Class redefines evaluation method of node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.MinusNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method redefining ancestor method, which returns integer value of addition between left and right children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Value of node after subtraction operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.MulNode">
+            <summary>
+            Class defining evaluation of multiplication of two numbers.\n
+            Class redefines evaluation method of node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.MulNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method redefining ancestor method, which returns integer value of addition between left and right children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Value of node after multiplication operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.DivNode">
+            <summary>
+            Class defining evaluation of division of two numbers.\n
+            Class redefines evaluation method of node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.DivNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method redefining ancestor method, which returns integer value of addition between left and right children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Value of node after division operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.ModNode">
+            <summary>
+            Class defining evaluation of modulation of two numbers.\n
+            Class redefines evaluation method of node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.ModNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method redefining ancestor method, which returns integer value of addition between left and right children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Value of node after modulation operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.IDNode">
+            <summary>
+            Class defines encapsulation for instance parameter identifier.\n
+            It's evaluation and also defines method for return type which is dependent on stored indentifier.\n
+            Class stores name of <see cref="T:EnvironmentCreator.Instance"/> and name of its variable. Both in string format.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.IDNode.m_id">
+            <summary>
+            Variable of instance identifier.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.IDNode.m_instance_id">
+            <summary>
+            Instance identifier.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method redefining ancestor method. Return value is dependent on type of variable, which is determined at run time.
+            This is due to possibility of definition of <see cref="T:EnvironmentCreator.Action"/> ahead of <see cref="T:EnvironmentCreator.Types"/>.
+            METHOD THROWS ERROR IF INSTANCE ID CANNOT BE FOUND.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Method returns one of <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> depending on stored variable type.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.SetId(System.String)">
+            <summary>
+            Method sets <see cref="T:EnvironmentCreator.Instance"/> bool or integer variable identifier.
+            </summary>
+            <param name="id">Name of variable.</param>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.#ctor(System.String,System.String)">
+            <summary>
+            Constructor creates class with <see cref="T:EnvironmentCreator.Instance"/> name in string format passed as parameter and
+            its viariable name in string format passed in parameter <paramref name="param"/>.
+            </summary>
+            <param name="instance">Name of <see cref="T:EnvironmentCreator.Instance"/> in string format.</param>
+            <param name="param">Name of <see cref="T:EnvironmentCreator.Instance"/>'s variable in string format.</param>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.#ctor(System.String)">
+            <summary>
+            Constructor creates class with no <see cref="T:EnvironmentCreator.Instance"/> name.
+            Therefore it can be some constant like 'true' or 'false'.
+            </summary>
+            <param name="param">Name of constant associated with no <see cref="T:EnvironmentCreator.Instance"/>.</param>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.ToString">
+            <summary>
+            Method redefines ancestor method.\n
+            Method takes string format of <see cref="T:EnvironmentCreator.Instance"/> name and concatenate it with stored name of variable.
+            </summary>
+            <returns>Method returns name of <see cref="T:EnvironmentCreator.Instance"/> and name of variable of this instance separated by dot.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.isInstanceNode">
+            <summary>
+            Method redefines ancestor method and 
+            returns true if node carries information about instance name.\n
+            Method does not say whether <see cref="T:EnvironmentCreator.Instance"/> does exist or not.
+            </summary>
+            <returns>True if name of <see cref="T:EnvironmentCreator.Instance"/> is filled, false otherwise.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefines parent evaluation method.
+            Use this method when <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> is BOOL.
+            Method return value in this node.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node, if <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> == BOOL.
+            Error otherwise.</param>
+        </member>
+        <member name="M:EnvironmentCreator.IDNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32@)">
+            <summary>
+            Method redefines parent evaluation method.
+            Use this method when <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> is INT.
+            Method return value in this node.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node, if <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> == INT.
+            Error otherwise.</param>
+        </member>
+        <member name="T:EnvironmentCreator.BinaryCompareOp">
+            <summary>
+            Class encapsulating evaluation of copmare operation of binary node.<see cref="T:EnvironmentCreator.BinaryOp"/>\n
+            Supported compare operations are ==,!=,&lt;,&gt;,&lt;=,&gt;=.\n
+            Class redefines <see cref="M:EnvironmentCreator.BinaryMathOp.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})"/> to boolean value.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.BinaryCompareOp.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Redefinition of ancestor method.\n
+            Compare operation can return only boolean, therefore redefinition is set to boolean.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Boolean value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.EqualNode">
+            <summary>
+            Class redefines evaluation of determining equality of two nodes storing return value from <see cref="M:EnvironmentCreator.BinaryMathOp.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})"/>.\n
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.NotEqualNode">
+            <summary>
+            Class redefines evaluation of determining unequality of two nodes storing return value from <see cref="M:EnvironmentCreator.BinaryMathOp.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})"/>.\n
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.NotEqualNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefining ancestor method, which returns boolean value depending on not equality of children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node between unequality operation of left and right children nodes.</param>
+        </member>
+        <member name="M:EnvironmentCreator.EqualNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefining ancestor method, which returns boolean value depending on equality of children nodes.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node between equality operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.LessThenNode">
+            <summary>
+            Class redefines evaluation of determining truthfulness of comparision of two nodes storing integer return value.\n
+            Comparision operation is left node is less then right node
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.LessThenNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefining ancestor method, which returns boolean value depending on comparision of left and right node to less then operation.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node between less then operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.LessOrEQNode">
+            <summary>
+            Class redefines evaluation of determining truthfulness of comparision of two nodes storing integer return value.\n
+            Comparision operation is left node is less then or equal to right node
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.LessOrEQNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefining ancestor method, which returns boolean value depending on comparision of left and right node to less then or equal operation.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node between less then or equal operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.MoreThenNode">
+            <summary>
+            Class redefines evaluation of determining truthfulness of comparision of two nodes storing integer return value.\n
+            Comparision operation is left node is more then right node
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.MoreThenNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefining ancestor method, which returns boolean value depending on comparision of left and right node to more then operation.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node between more then operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.MoreOrEQNode">
+            <summary>
+            Class redefines evaluation of determining truthfulness of comparision of two nodes storing integer return value.\n
+            Comparision operation is left node is more then or equal to right node
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.MoreOrEQNode.evalNode(System.Collections.Generic.Dictionary{System.String,System.String},System.Boolean@)">
+            <summary>
+            Method redefining ancestor method, which returns boolean value depending on comparision of left and right node to more then or equal operation.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="returnVal">Boolean value of node between more then or equal operation of left and right children nodes.</param>
+        </member>
+        <member name="T:EnvironmentCreator.NewAssign">
+            <summary>
+            Class encapsulation assigning value of right operand to left operand.
+            Class represents right and left operand as nodes of binary node assign.
+            Class presents assign method that is used when assigning left node value of right node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.NewAssign.m_returnType">
+            <summary>
+            Variable represnting return type of a node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.NewAssign.m_lNode">
+            <summary>
+            Left node of assign node. Node whom value of right node is assigned.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.NewAssign.m_rNode">
+            <summary>
+            Right node of assign node. Node whose value is assigned to left node.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.NewAssign.SetNodes(EnvironmentCreator.EvaluationNode,EnvironmentCreator.EvaluationNode)">
+            <summary>
+            Method gives ability to insert nodes which are used in assign operation.
+            Constructor does not have this ability, therefore this method is used.
+            </summary>
+            <param name="lNode">Left side of assign. Node to which will be assigned value of right node.</param>
+            <param name="rNode">Right side of assign. Node which value will be assigned to left node.</param>
+        </member>
+        <member name="M:EnvironmentCreator.NewAssign.assignVl(System.Int32,System.Collections.Generic.Dictionary{System.String,System.String},EnvironmentCreator.GameStatData.AssignOperators)">
+            <summary>
+            Method processing assignng value to integer typed left node.
+            Method takes argument <paramref name="value"/> and assign this value to left node.\n
+            This assign is dependent on one of <see cref="T:EnvironmentCreator.GameStatData.AssignOperators"/>.
+            For example <see cref="F:EnvironmentCreator.GameStatData.AssignOperators.DIVISION_ASSIGN"/> takes <paramref name="value"/> and divide left node by it \n
+            and then set left node to this new value.
+            </summary>
+            <param name="value">Integer value of right node.</param>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <param name="op">Operation whish is performed during assigning.</param>
+        </member>
+        <member name="M:EnvironmentCreator.NewAssign.assignVl(System.Boolean,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method processing assignng value to boolean typed left node.
+            Method takes argument <paramref name="value"/> and assign this value to left node.\n
+            </summary>
+            <param name="value">Boolean value of right node.</param>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="T:EnvironmentCreator.Assign">
+            <summary>
+            Class encapsulating assign of integer to <see cref="T:EnvironmentCreator.Instance"/> integer variable or boolean to <see cref="T:EnvironmentCreator.Instance"/> boolean variable.\n
+            Assign is performed between left node, which stores variable, and right node storing value to be assigned.\n
+            Return type of assign depend on parameters in children nodes.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Assign.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method evaluates right node and his value is assigned to left node. Both nodes have to have same return type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Assign.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method overrides ancestor method and determines return type of node.
+            Return type might be boolean or integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns boolean or integer values from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.SubstractAssign">
+            <summary>
+            Class encapsulating subtraction assign of integer to <see cref="T:EnvironmentCreator.Instance"/> integer variable .\n
+            Assign is performed between left node, which stores variable, and right node storing value to be assigned.\n
+            Return type of this assign is integer.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.SubstractAssign.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method evaluates right node and his value is subtracted from left node and then result is assigned to it. Both nodes have to have integer return type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.SubstractAssign.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method overrides ancestor method and set return type of node to integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns integer value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.AddAssign">
+            <summary>
+            Class encapsulating addition assign of integer to <see cref="T:EnvironmentCreator.Instance"/> integer variable .\n
+            Assign is performed between left node, which stores variable, and right node storing value to be assigned.\n
+            Return type of this assign is integer.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.AddAssign.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method evaluates right node and his value is added to left node and then result is assigned to it. Both nodes have to have integer return type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.AddAssign.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method overrides ancestor method and set return type of node to integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns integer value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.DivisionAssign">
+            <summary>
+            Class encapsulating division assign of integer to <see cref="T:EnvironmentCreator.Instance"/> integer variable .\n
+            Assign is performed between left node, which stores variable, and right node storing value to be assigned.\n
+            Return type of this assign is integer.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.DivisionAssign.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method evaluates right node and his value is divisor for left node and result is then assigned to it. Both nodes have to have integer return type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.DivisionAssign.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method overrides ancestor method and set return type of node to integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns integer value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.MultiplAssign">
+            <summary>
+            Class encapsulating multiplication assign of integer to <see cref="T:EnvironmentCreator.Instance"/> integer variable .\n
+            Assign is performed between left node, which stores variable, and right node storing value to be assigned.\n
+            Return type of this assign is integer.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.MultiplAssign.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method evaluates right node and his value is multipicator for left node and then result is assigned to it. Both nodes have to have integer return type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.MultiplAssign.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method overrides ancestor method and set return type of node to integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns integer value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.ModAssign">
+            <summary>
+            Class encapsulating modulation assign of integer to <see cref="T:EnvironmentCreator.Instance"/> integer variable .\n
+            Assign is performed between left node, which stores variable, and right node storing value to be assigned.\n
+            Return type of this assign is integer.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.ModAssign.evalNode(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method evaluates right node and his value is modulator for left node and then result is assigned to it. Both nodes have to have integer return type.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        </member>
+        <member name="M:EnvironmentCreator.ModAssign.ReturnType(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Method overrides ancestor method and set return type of node to integer.
+            </summary>
+            <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+            <returns>Returns integer value from <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.UnknownParameterExc">
+            <summary>
+            Error message when name of <see cref="T:EnvironmentCreator.Instance"/> variable cannot be found.
+            Parameter does not exist or <see cref="T:EnvironmentCreator.Instance"/> of this parameter was not created.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnknownParameterExc.#ctor(System.String)">
+            <summary>
+            Error message when name of <see cref="T:EnvironmentCreator.Instance"/> variable cannot be found.
+            Parameter does not exist or <see cref="T:EnvironmentCreator.Instance"/> of this parameter was not created.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.UnknownInstanceExc">
+            <summary>
+            Error message when name of <see cref="T:EnvironmentCreator.Instance"/> cannot be found.
+            <see cref="T:EnvironmentCreator.Instance"/> was not created or is not defined in scope.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnknownInstanceExc.#ctor(System.String)">
+            <summary>
+            Error message when name of <see cref="T:EnvironmentCreator.Instance"/> cannot be found.
+            <see cref="T:EnvironmentCreator.Instance"/> was not created or is not defined in scope.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.UnxpectedParamTypeExc">
+            <summary>
+            Class consist of exceptions related to unxpected/wrong type of parameter was passed to <see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnxpectedParamTypeExc.#ctor(EnvironmentCreator.GameStatData.NodeReturnType,EnvironmentCreator.GameStatData.NodeReturnType,EnvironmentCreator.GameStatData.BoolOperators)">
+            <summary>
+            Method describes error of wrong variable during <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> compare operation.
+            </summary>
+            <param name="expectedType"><see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> type of variable that was expected.</param>
+            <param name="gotType"><see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> type of variable that was passed to compare operation.</param>
+            <param name="compareFunction">Specific compare operation.</param>
+        </member>
+        <member name="M:EnvironmentCreator.UnxpectedParamTypeExc.#ctor(EnvironmentCreator.GameStatData.NodeReturnType,EnvironmentCreator.GameStatData.NodeReturnType,EnvironmentCreator.GameStatData.AssignOperators)">
+            <summary>
+            Method describes error of wrong variable during <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> assign operation.
+            </summary>
+            <param name="expectedType"><see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> type of variable that was expected.</param>
+            <param name="gotType"><see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> type of variable that was passed to assign operation.</param>
+            <param name="assignFunction">Specific assign operation.</param>
+        </member>
+        <member name="T:EnvironmentCreator.FunctionNotSupportedExcp">
+            <summary>
+            Class handling error of not defined or supported function/<see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.FunctionNotSupportedExcp.#ctor(System.Reflection.MethodBase)">
+            <summary>
+            Exception constructor. Construct exception describng error during call of not existing or not supported function/<see cref="T:EnvironmentCreator.Action"/>.
+            </summary>
+            <param name="methodBs">Parameter describing information about methods and constructors which made error.</param>
+        </member>
+        <member name="M:EnvironmentCreator.FunctionNotSupportedExcp.#ctor(System.String)">
+            <summary>
+            Exception constructor for not supported function, that is not in <see cref="F:EnvironmentCreator.GameStatData.m_functions"/>.
+            </summary>
+            <param name="fnName">String representation of name of not supported function.</param>
+        </member>
+        <member name="T:EnvironmentCreator.UnexpectedParserToken">
+            <summary>
+            Class handling exception of unexpected token during processing user input.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnexpectedParserToken.#ctor(System.String)">
+            <summary>
+            Class constructor creating error output for unexpected token read throught grammar, which cannot be processed.
+            </summary>
+            <param name="where">Parameter describing which method grammar part contains error.</param>
+        </member>
+        <member name="T:EnvironmentCreator.CannotChooseVariableTypeExc">
+            <summary>
+            Class containing exception when parameter <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> cannot be choosen.
+            </summary>
+            <example>For example type has two variables of the same name of different types and program cannot choose which one to use for comparision.</example>
+        </member>
+        <member name="M:EnvironmentCreator.CannotChooseVariableTypeExc.#ctor(System.String)">
+            <summary>
+            Constructor of exception handles error message and describes which variable <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> cannot be determined.
+            </summary>
+            <param name="variable">Name of variable.</param>
+        </member>
+        <member name="T:EnvironmentCreator.UnknownAncestorType">
+            <summary>
+            Exception handling error when user set name of ancestor <see cref="T:EnvironmentCreator.Types"/> to not existing <see cref="T:EnvironmentCreator.Types"/>.
+            Meaning that <see cref="T:EnvironmentCreator.Types"/> extends from non existing <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnknownAncestorType.#ctor(System.String)">
+            <summary>
+            Constructor creates error message with string representation of name of ancestor <see cref="T:EnvironmentCreator.Types"/>, that was not found.
+            </summary>
+            <param name="ancestor">String representation of name of not found ancestor <see cref="T:EnvironmentCreator.Types"/>.</param>
+        </member>
+        <member name="T:EnvironmentCreator.UnknownType">
+            <summary>
+            Class representing exception when creating new <see cref="T:EnvironmentCreator.Instance"/> with not defined name of <see cref="T:EnvironmentCreator.Types"/>.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnknownType.#ctor(System.String)">
+            <summary>
+            Constructor send message to error output. Message describes which name of parameter was not found.
+            </summary>
+            <param name="typeName">String representation of not found name of <see cref="T:EnvironmentCreator.Types"/>.</param>
+        </member>
+        <member name="T:EnvironmentCreator.UnknownReturnType">
+            <summary>
+            Exception used when unrecognized <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> is encountered.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.UnknownReturnType.#ctor(System.String)">
+            <summary>
+            Encountered identifier which has no <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/> associated.
+            </summary>
+            <param name="identifier"></param>
+        </member>
+        <member name="T:EnvironmentCreator.GameStatData">
+            <summary>
+            Class storing all common static data.
+            Class stores 
+            <list type="bullet">
+            <item><see cref="T:EnvironmentCreator.GameStatData.BoolOperators"/></item>
+            <item><see cref="T:EnvironmentCreator.GameStatData.AssignOperators"/></item>
+            <item><see cref="T:EnvironmentCreator.GameStatData.AritmeticOperators"/></item>
+            <item><see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/></item>
+            <item>grammar processors</item>
+            <item>game processor <see cref="T:EnvironmentCreator.GameProcessing"/></item>
+            </list>
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.m_functions">
+            <summary>
+            Storage of all functions. Storage consist of predefined functions and functions that was added during simulation run.
+            </summary>
+            <exception cref="T:EnvironmentCreator.FunctionNotSupportedExcp">Throws this error, when function cannot be found in <see cref="F:EnvironmentCreator.GameStatData.m_functions"/>.</exception>
+        </member>
+        <member name="M:EnvironmentCreator.GameStatData.GetFunction(System.String,System.String[])">
+            <summary>
+            Method search for function by it's name and returns pointer to this function.
+            If function was not found, then null is returned. Use this method when you accessing function and you have it's name.
+            </summary>
+            <param name="fnName">name of function.</param>
+            <param name="paramPos">String array have on i-th position name of i-th parameter of this function.</param>
+            <returns> Function to asociated with <paramref name="fnName"/>. Null if no function is associated.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.GameStatData.AddFunction(EnvironmentCreator.Function)">
+            <summary>
+            Method adds function to storage of functions useable by <see cref="T:EnvironmentCreator.Action"/>s in simulation.
+            </summary>
+            <param name="function"> Function to be added to pool of useable functions.</param>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.m_compareOper">
+            <summary>
+            Structure storing comparison operators in pair of its string representation and corresponding <see cref="T:EnvironmentCreator.GameStatData.BoolOperators"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.m_assignNode_VIS">
+            <summary>
+            ANTLR grammar visitor, which return type is <see cref="T:EnvironmentCreator.EvaluationNode"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.m_returnType_VIS">
+            <summary>
+            ANTLR grammar visitor, which return type is <see cref="T:EnvironmentCreator.GameStatData.NodeReturnType"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.m_int_VIS">
+            <summary>
+            ANTLR grammar visitor, which return type is integer but its value is not used for any purpose.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.close_range">
+            <summary>
+            Static definition for close range of two objects.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.GameStatData.GetCurrentMethod">
+            <summary>
+            Method determining name of currently executed method.
+            Of course before call of this method.
+            </summary>
+            <returns>String representation of name of last method on the stack.</returns>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.game">
+            <summary>
+            Only instance of <see cref="T:EnvironmentCreator.GameProcessing"/>, which process whole simulation.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.GameStatData.#cctor">
+            <summary>
+            Static constructor which initialize all static variables.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.GameStatData.BoolOperators">
+            <summary>
+            Enumeration representing all compare operators used in <see cref="T:EnvironmentCreator.BinaryOp"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.BoolOperators.EQUAL">
+            <summary>
+            Operator representing equality between two nodes.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.BoolOperators.NOT_EQUAL">
+            <summary>
+            Operator representing inequality between two nodes.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.BoolOperators.LESS_THEN">
+            <summary>
+            Operator representing boolean oparator representing that left node is less than right node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.BoolOperators.MORE_THEN">
+            <summary>
+            Operator representing boolean oparator representing that left node is greater than right node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.BoolOperators.LESS_OR_EQUAL">
+            <summary>
+            Operator representing boolean oparator representing that left node is less than or equal to right node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.BoolOperators.MORE_OR_EQUAL">
+            <summary>
+            Operator representing boolean oparator representing that left node is more than or equal to right node.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.GameStatData.AssignOperators">
+            <summary>
+            Enumeration representing all assign operators used in <see cref="T:EnvironmentCreator.BinaryOp"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AssignOperators.ASSIGN">
+            <summary>
+            Operator representing assigning value of right node to left node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AssignOperators.SUBSTRACT_ASSIGN">
+            <summary>
+            Operator representing subtracting value of right node from left node and assigning result to left node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AssignOperators.ADD_ASSIGN">
+            <summary>
+            Operator representing adding value of right node to left node and assigning result to left node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AssignOperators.MULTIPL_ASSIGN">
+            <summary>
+            Operator representing multiplicating value of left node by value of right node and assigning result to left node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AssignOperators.DIVISION_ASSIGN">
+            <summary>
+            Operator representing dividing value of left node by the value of right node and assigning result to left node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AssignOperators.MODULO_ASSIGN">
+            <summary>
+            Operator representing moduling value of left node by the value of right node and assigning result to left node.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.GameStatData.AritmeticOperators">
+            <summary>
+            Enumeration representing defined artmetic operations on integers.
+            Those aritmatic operations are used in <see cref="T:EnvironmentCreator.BinaryOp"/>.
+            As of now there are defined five basic aritmatic operations on integers.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AritmeticOperators.ADDITION">
+            <summary>
+            Addition between left and right node of <see cref="T:EnvironmentCreator.EvaluationNode"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AritmeticOperators.SUBSTRACTION">
+            <summary>
+            Subtraction of left node by right node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AritmeticOperators.MULTIPLICATION">
+            <summary>
+            Multiplication between left and right node of <see cref="T:EnvironmentCreator.EvaluationNode"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AritmeticOperators.DIVISION">
+            <summary>
+            Division of left node by right node.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.AritmeticOperators.MODULATION">
+            <summary>
+            Modulation of left node by right node.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.GameStatData.NodeReturnType">
+            <summary>
+            Enumeration representing all return possible types of <see cref="T:EnvironmentCreator.EvaluationNode"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.NodeReturnType.INT">
+            <summary>
+            Node can return only integer value.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.NodeReturnType.BOOL">
+            <summary>
+            Node can return only boolean value.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.NodeReturnType.INT_BOOL">
+            <summary>
+            There is some uncertainty and node can return both integer or boolean.
+            This might be due to same name of variable in parent and child node one as boolean type and another tme as integer.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GameStatData.NodeReturnType.INSTANCE">
+            <summary>
+            Parameter is not boolean or integer variable, but whole <see cref="T:EnvironmentCreator.Instance"/>.
+            </summary>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.GStrat_VIS_int">
+            <summary>
+            Visitor class processing all rules that hava return type integer or have no return type.\n
+            In second case, return value is redundant information and has no meaning.
+            Class match to four rules processing:
+            <list type="bullet">
+            <item><see cref="T:EnvironmentCreator.Types"/></item>
+            <item><see cref="T:EnvironmentCreator.Instance"/></item>
+            <item><see cref="T:EnvironmentCreator.Action"/></item>
+            <item><see cref="T:EnvironmentCreator.Function"/></item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_int.VisitAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Method processing grammar rule matching 'Action'.
+            Method during its process creates <see cref="T:EnvironmentCreator.Action"/> class and adds it to <see cref="T:EnvironmentCreator.GroundingParams"/>.
+            </summary>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Returned value is irrelevant.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_int.VisitNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Method processing grammar rule matching 'NewType'.\n
+            Method reads name ,variables and ancestor of new type.\n
+            Then new type is created and added to set of types in <see cref="F:EnvironmentCreator.GroundingParams.m_types"/>.
+            </summary>
+            <exception cref="T:EnvironmentCreator.UnknownAncestorType">UnknownAncestorType when unknown ancestor was defined or ancestor is defined later then this type.</exception>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Return value is irrelevant.</returns>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStrat_VIS_int.VisitNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Method processing grammar rule matching 'NewType'.\n
+            Method used when new instance of type is beign created.\n
+            Method reads name of type and prepares instances with selected names.\n
+            Then new type is created and added to set of types in <see cref="F:EnvironmentCreator.GroundingParams.m_types"/>.
+            </summary>
+            <exception cref="T:EnvironmentCreator.UnknownAncestorType">When unknown ancestor was defined or ancestor is defined later then this type.</exception>
+            <param name="context">Parameter of parser context of currently processed tree part.</param>
+            <returns>Return value is irrelevant.</returns>
+        </member>
+        <member name="T:EnvironmentCreator.GroundingParams">
+            <summary>
+            Class stores:
+            <list type="bullet">
+            <item><see cref="T:EnvironmentCreator.Types"/></item>
+            <item><see cref="T:EnvironmentCreator.Instance"/></item>
+            <item><see cref="T:EnvironmentCreator.Action"/></item>
+            </list>
+            Class also encapsulates work with all <see cref="T:EnvironmentCreator.Instance"/>'s variables.\n
+            This class "grounds" them. Stores them and contain methods for their usage and change.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GroundingParams.m_InstanceIntegerVar">
+            <summary>
+            Variable storing all integer variables of all <see cref="T:EnvironmentCreator.Instance"/>s.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GroundingParams.m_InstanceBoolVar">
+            <summary>
+            Variable storing all boolean variables of all <see cref="T:EnvironmentCreator.Instance"/>s.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GroundingParams.m_instances">
+            <summary>
+            Public storage for all <see cref="T:EnvironmentCreator.Instance"/>s.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GroundingParams.m_types">
+            <summary>
+            Variable storing couple <see cref="T:EnvironmentCreator.Types"/>'s name in string format and <see cref="T:System.Type"/>.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GroundingParams.m_actions">
+            <summary>
+            Variable storing pair name of <see cref="T:EnvironmentCreator.Action"/> in string format and <see cref="T:EnvironmentCreator.Action"/> corresponding to this name.
+            </summary>
+        </member>
+        <member name="F:EnvironmentCreator.GroundingParams.m_functions">
+            <summary>
+            Variable storing pair name of <see cref="T:EnvironmentCreator.Function"/> in string format and <see cref="T:EnvironmentCreator.Function"/> corresponding to this name.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.GroundingParams.#cctor">
+            <summary>
+            Static constructor, which initialize storage for 
+            <list type="bullet">
+            <item><see cref="F:EnvironmentCreator.GroundingParams.m_types"/></item>
+            <item><see cref="F:EnvironmentCreator.GroundingParams.m_instances"/></item>
+            <item><see cref="F:EnvironmentCreator.GroundingParams.m_actions"/></item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.GroundingParams.GroundInstance(EnvironmentCreator.Instance)">
+            <summary>
+            Method grounding <see cref="T:EnvironmentCreator.Instance"/>'s variables.\n
+            Method takes each variable of <see cref="T:EnvironmentCreator.Types"/> and ancestor <see cref="T:EnvironmentCreator.Types"/>. This is done recursively till <see cref="F:EnvironmentCreator.Types.m_defaultAncestor"/> of <see cref="T:EnvironmentCreator.Types"/>\n
+            and creates them with prexif as <see cref="T:EnvironmentCreator.Instance"/>'s name in the \n
+            <see cref="F:EnvironmentCreator.GroundingParams.m_InstanceBoolVar"/> or <see cref="F:EnvironmentCreator.GroundingParams.m_InstanceIntegerVar"/>, depending if it is variable of type boolean or integer.
+            </summary>
+            <param name="inst">Inastance which parameters are "grounded".</param>
+        </member>
+        <member name="M:EnvironmentCreator.GroundingParams.AddAction(EnvironmentCreator.Action)">
+            <summary>
+            Method handles addidng new action to set of all actions in the simulation.
+            </summary>
+            <param name="act">Action to be added to <see cref="F:EnvironmentCreator.GroundingParams.m_actions"/></param>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.IGStratListener">
+            <summary>
+            This interface defines a complete listener for a parse tree produced by
+            <see cref="T:EnvironmentCreator.Gammars.GStratParser"/>.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.effecte"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.effecte"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.CallFn"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.CallFn"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterRoot(EnvironmentCreator.Gammars.GStratParser.RootContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.root"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitRoot(EnvironmentCreator.Gammars.GStratParser.RootContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.root"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.@int"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.@int"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.AddSub"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.AddSub"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.PrecondExpr"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.PrecondExpr"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.CallFnPrecond"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.CallFnPrecond"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.parenth"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.parenth"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.id"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.id"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.functionCall"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.functionCall"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.NewType"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.NewType"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.AssignExpr"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.AssignExpr"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.ident"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.ident"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.action"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.action"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.MulDivMod"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.MulDivMod"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.NewVariable"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.NewVariable"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.EnterNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.NewInstances"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.IGStratListener.ExitNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.NewInstances"/>.
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="T:EnvironmentCreator.Gammars.GStratBaseListener">
+            <summary>
+            This class provides an empty implementation of <see cref="T:EnvironmentCreator.Gammars.IGStratListener"/>,
+            which can be extended to create a listener which only needs to handle a subset
+            of the available methods.
+            </summary>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.effecte"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitEffecte(EnvironmentCreator.Gammars.GStratParser.EffecteContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.effecte"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.CallFn"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitCallFn(EnvironmentCreator.Gammars.GStratParser.CallFnContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.CallFn"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterRoot(EnvironmentCreator.Gammars.GStratParser.RootContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.root"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitRoot(EnvironmentCreator.Gammars.GStratParser.RootContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.root"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.@int"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitInt(EnvironmentCreator.Gammars.GStratParser.IntContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.@int"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.AddSub"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitAddSub(EnvironmentCreator.Gammars.GStratParser.AddSubContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.AddSub"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.PrecondExpr"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitPrecondExpr(EnvironmentCreator.Gammars.GStratParser.PrecondExprContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.PrecondExpr"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.CallFnPrecond"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitCallFnPrecond(EnvironmentCreator.Gammars.GStratParser.CallFnPrecondContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.CallFnPrecond"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.parenth"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitParenth(EnvironmentCreator.Gammars.GStratParser.ParenthContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.parenth"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.id"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitId(EnvironmentCreator.Gammars.GStratParser.IdContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.id"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.functionCall"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitFunctionCall(EnvironmentCreator.Gammars.GStratParser.FunctionCallContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.functionCall"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.NewType"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitNewType(EnvironmentCreator.Gammars.GStratParser.NewTypeContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.NewType"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.AssignExpr"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitAssignExpr(EnvironmentCreator.Gammars.GStratParser.AssignExprContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.AssignExpr"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.ident"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitIdent(EnvironmentCreator.Gammars.GStratParser.IdentContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.ident"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.action"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitAction(EnvironmentCreator.Gammars.GStratParser.ActionContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="M:EnvironmentCreator.Gammars.GStratParser.action"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.MulDivMod"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitMulDivMod(EnvironmentCreator.Gammars.GStratParser.MulDivModContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.MulDivMod"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.NewVariable"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitNewVariable(EnvironmentCreator.Gammars.GStratParser.NewVariableContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.NewVariable"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Enter a parse tree produced by <see cref="!:GStratParser.NewInstances"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitNewInstances(EnvironmentCreator.Gammars.GStratParser.NewInstancesContext)">
+            <summary>
+            Exit a parse tree produced by <see cref="!:GStratParser.NewInstances"/>.
+            <para>The default implementation does nothing.</para>
+            </summary>
+            <param name="context">The parse tree.</param>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.EnterEveryRule(Antlr4.Runtime.ParserRuleContext)">
+            <inheritdoc/>
+            <remarks>The default implementation does nothing.</remarks>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.ExitEveryRule(Antlr4.Runtime.ParserRuleContext)">
+            <inheritdoc/>
+            <remarks>The default implementation does nothing.</remarks>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.VisitTerminal(Antlr4.Runtime.Tree.ITerminalNode)">
+            <inheritdoc/>
+            <remarks>The default implementation does nothing.</remarks>
+        </member>
+        <member name="M:EnvironmentCreator.Gammars.GStratBaseListener.VisitErrorNode(Antlr4.Runtime.Tree.IErrorNode)">
+            <inheritdoc/>
+            <remarks>The default implementation does nothing.</remarks>
+        </member>
+    </members>
+</doc>

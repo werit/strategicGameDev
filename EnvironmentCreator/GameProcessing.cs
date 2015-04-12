@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -34,7 +34,7 @@ namespace EnvironmentCreator
         /// </summary>
         private List<TriggerEndEff> m_endEffects = new List<TriggerEndEff>();
         /// <summary>
-        /// Internal storage for class which generates parameters of <see cref="Actions"/>
+        /// Internal storage for class which generates parameters of <see cref="Action"/>s.
         /// </summary>
         private ParamGenerator m_parameterGenerator = new ParamGenerator();
         /// <summary>
@@ -104,9 +104,9 @@ namespace EnvironmentCreator
             this.m_timeDelta = delta;
             for (int i = 0; i < m_endEffects.Count; ++i)
             {
-                m_endEffects[i].NextIteration((int)m_timeDelta);
+                m_endEffects[i].NextIteration(m_timeDelta);
             }
-            m_endEffects.RemoveAll(delegate(TriggerEndEff eff) { return eff.GetLeftDur() <= 0; });
+            m_endEffects.RemoveAll(delegate(TriggerEndEff eff) { return eff.GetLeftDur() <= 0f; });
             // evaluate all actions
 
             foreach (Action act in GroundingParams.m_actions.Values)

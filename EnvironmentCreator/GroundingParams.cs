@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace EnvironmentCreator
 {
@@ -82,17 +82,19 @@ namespace EnvironmentCreator
                 intDict = new Dictionary<string, int>();
                 boolDict = new Dictionary<string, bool>();
                 // filling integer variables
+                if (!m_InstanceIntegerVar.ContainsKey(inst.GetInstanceName()))
+                    m_InstanceIntegerVar.Add(inst.GetInstanceName(), new Dictionary<string, int>());
                 for (int i = 0; i < parent.GetAllIntVar().Count(); ++i)
                 {
-                    intDict.Add(parent.GetAllIntVar()[i], 0);
+                    m_InstanceIntegerVar[inst.GetInstanceName()].Add(parent.GetAllIntVar()[i], 0);
                 }
-                m_InstanceIntegerVar.Add(inst.GetInstanceName(), intDict);
                 // filling bool variables
+                if (!m_InstanceBoolVar.ContainsKey(inst.GetInstanceName()))
+                    m_InstanceBoolVar.Add(inst.GetInstanceName(), new Dictionary<string, bool>());
                 for (int i = 0; i < parent.GetAllBoolVar().Count(); ++i)
                 {
-                    boolDict.Add(parent.GetAllIntVar()[i], false);
+                    m_InstanceBoolVar[inst.GetInstanceName()].Add(parent.GetAllBoolVar()[i], false);
                 }
-                m_InstanceBoolVar.Add(inst.GetInstanceName(), boolDict);
                 // prepare for interation of parent
                 parent = parent.GetAncestor();
             }

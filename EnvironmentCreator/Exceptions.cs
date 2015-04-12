@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using System.Reflection;
 using EnvironmentCreator.Gammars;
 
@@ -21,6 +21,21 @@ namespace EnvironmentCreator
         public UnknownParameterExc(string id)
         {
             Console.Error.WriteLine("Parameter {0} was not found as variable of any type.", id);
+        }
+    }
+    /// <summary>
+    /// Error message when name of <see cref="Instance"/> cannot be found.
+    /// <see cref="Instance"/> was not created or is not defined in scope.
+    /// </summary>
+    public class UnknownInstanceExc : System.Exception
+    {
+        /// <summary>
+        /// Error message when name of <see cref="Instance"/> cannot be found.
+        /// <see cref="Instance"/> was not created or is not defined in scope.
+        /// </summary>
+        public UnknownInstanceExc(string id)
+        {
+            Console.Error.WriteLine("Instance {0} was not found. Instance is not defined in action scope or does not exist.", id);
         }
     }
     /// <summary>
@@ -44,7 +59,7 @@ namespace EnvironmentCreator
         /// </summary>
         /// <param name="expectedType"><see cref="GameStatData.NodeReturnType"/> type of variable that was expected.</param>
         /// <param name="gotType"><see cref="GameStatData.NodeReturnType"/> type of variable that was passed to assign operation.</param>
-        /// <param name="compareFunction">Specific assign operation.</param>
+        /// <param name="assignFunction">Specific assign operation.</param>
         public UnxpectedParamTypeExc(GameStatData.NodeReturnType expectedType, GameStatData.NodeReturnType gotType, GameStatData.AssignOperators assignFunction)
         {
             Console.Error.WriteLine("Different return types was passed as parameter of assign function '{0}', expected parameter type was '{1}' and got '{2}'",
@@ -68,6 +83,13 @@ namespace EnvironmentCreator
                 Console.Error.Write(" '{0}' '{1}'",methodBs.GetParameters()[i].GetType().Name.ToString(),methodBs.GetParameters()[i].Name.ToString());
             }
             Console.Error.WriteLine(" is not supported.");
+        }
+        /// <summary>
+        /// Exception constructor for not supported function, that is not in <see cref="GameStatData.m_functions"/>.
+        /// </summary>
+        /// <param name="fnName">String representation of name of not supported function.</param>
+        public FunctionNotSupportedExcp(string fnName) {
+            Console.Error.WriteLine("Cannot find function {0}. Add it to function storage.",fnName);
         }
     }
     /// <summary>
@@ -126,6 +148,20 @@ namespace EnvironmentCreator
         public UnknownType(string typeName)
         {
             Console.Error.WriteLine("Type with name '{0}', was not fund.", typeName);
+        }
+    }
+    /// <summary>
+    /// Exception used when unrecognized <see cref="GameStatData.NodeReturnType"/> is encountered.
+    /// </summary>
+    public class UnknownReturnType : SystemException
+    {
+        /// <summary>
+        /// Encountered identifier which has no <see cref="GameStatData.NodeReturnType"/> associated.
+        /// </summary>
+        /// <param name="identifier"></param>
+        public UnknownReturnType(string identifier)
+        {
+            Console.Error.WriteLine("Identifier with name: '{0}', was encountered and there is no NodeReturnType associated with this identifier", identifier);
         }
     }
 }

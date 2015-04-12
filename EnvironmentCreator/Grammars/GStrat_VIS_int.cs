@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -31,31 +31,31 @@ namespace EnvironmentCreator.Gammars
         public override int VisitAction(GStratParser.ActionContext context)
         {
             string actName = context.NAME(0).GetText();
-            string[] paramNames = new string[(context.NAME().Count - 1) / 2];
-            string[] paramTypes = new string[(context.NAME().Count - 1) / 2];
-            EvaluationNode[] effs = new EvaluationNode[context.effect().Count];
-            EvaluationNode[] effend = new EvaluationNode[context.effecte().Count];
+            string[] paramNames = new string[(context.NAME().Length - 1) / 2];
+            string[] paramTypes = new string[(context.NAME().Length - 1) / 2];
+            EvaluationNode[] effs = new EvaluationNode[context.effect().Length];
+            EvaluationNode[] effend = new EvaluationNode[context.effecte().Length];
             EvaluationNode dur = GameStatData.m_assignNode_VIS.Visit(context.expression());
-            EvaluationNode[] precond = new EvaluationNode[context.precondition().Count];
-            for (int i = 1; i < context.NAME().Count; i += 2)
+            EvaluationNode[] precond = new EvaluationNode[context.precondition().Length];
+            for (int i = 1; i < context.NAME().Length; i += 2)
             {
                 paramTypes[(i - 1) / 2] = context.NAME(i).GetText();
                 paramNames[(i - 1) / 2] = context.NAME(i + 1).GetText();
             }
 
-            for (int i = 0; i < context.precondition().Count; i++)
+            for (int i = 0; i < context.precondition().Length; i++)
             {
                 precond[i] = GameStatData.m_assignNode_VIS.Visit(context.precondition(i));
             }
 
-            for (int i = 0; i < context.effect().Count; i++)
+            for (int i = 0; i < context.effect().Length; i++)
             {
                 effs[i] = GameStatData.m_assignNode_VIS.Visit(context.effect(i));
             }
 
-            for (int i = 0; i < context.effecte().Count; i++)
+            for (int i = 0; i < context.effecte().Length; i++)
             {
-                effs[i] = GameStatData.m_assignNode_VIS.Visit(context.effecte(i));
+                effend[i] = GameStatData.m_assignNode_VIS.Visit(context.effecte(i));
             }
             Action act = new Action(actName, paramTypes, paramNames, dur, precond, effs, effend);
             GroundingParams.AddAction(act);
@@ -70,16 +70,7 @@ namespace EnvironmentCreator.Gammars
             }
             return 0;
         } */
-        /// <summary>
-        /// Method processing grammar rule matching 'FunctionCall'.
-        /// Method during its process creates <see cref="Function"/> class.
-        /// </summary>
-        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
-        /// <returns>Return value is irrelevant.</returns>
-        public override int VisitFunctionCall(GStratParser.FunctionCallContext context)
-        {
-            return base.VisitFunctionCall(context);
-        }
+        
         /// <summary>
         /// Method processing grammar rule matching 'NewType'.\n
         /// Method reads name ,variables and ancestor of new type.\n
@@ -94,7 +85,7 @@ namespace EnvironmentCreator.Gammars
             List<string> intVariables = new List<string>();
             List<string> boolVariables = new List<string>();
             // get all variables of type
-            for (int i = 0; i < context.variable().Count; ++i)
+            for (int i = 0; i < context.variable().Length; ++i)
             {
                 if (GameStatData.m_returnType_VIS.Visit(context.variable(i)) == GameStatData.NodeReturnType.INT)
                     intVariables.Add(GameStatData.m_returnType_VIS.GetVarName()); // getVarName stores name of variable last read
@@ -103,10 +94,12 @@ namespace EnvironmentCreator.Gammars
             }
 
             Types ancestor = null;
-            if (context.NAME().Count > 1)
+            if (context.NAME().Length > 1)
                 if (!GroundingParams.m_types.TryGetValue(context.NAME(1).GetText(), out ancestor))
                     throw new UnknownAncestorType(context.NAME(1).GetText());
             // create right now defined type
+            string s = context.NAME(0).GetText();
+            Console.WriteLine(s + " ERROR");
             Types typ = new Types(context.NAME(0).GetText(), ancestor, intVariables, boolVariables);
             GroundingParams.m_types.Add(typ.GetName(), typ);
             return 0;
@@ -123,14 +116,13 @@ namespace EnvironmentCreator.Gammars
         public override int VisitNewInstances(GStratParser.NewInstancesContext context)
         {
             Types type = null;
-            Instance[] inst = new Instance[context.NAME().Count-1];
+            Instance[] inst = new Instance[context.NAME().Length-1];
             if (!GroundingParams.m_types.TryGetValue(context.NAME(0).GetText(), out type))
                 throw new UnknownType(context.NAME(0).GetText());
-            for (int i = 1; i < context.NAME().Count; ++i)
+            for (int i = 1; i < context.NAME().Length; ++i)
             {
                 inst[i-1] = new Instance(context.NAME(i).GetText(),type);
             }
-            type.AddInst(inst);
             return 0;
         }
     }

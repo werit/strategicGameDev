@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace EnvironmentCreator
 {
@@ -32,6 +32,7 @@ namespace EnvironmentCreator
             this.m_instanceOf = type;
             GroundingParams.m_instances.Add(this.GetInstanceName(), this);
             GroundingParams.GroundInstance(this);
+            type.AddInst(this);
         }
         /// <summary>
         /// Method for getting <see cref="Types"/>'s name of this instance.

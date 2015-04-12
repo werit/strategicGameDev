@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using EnvironmentCreator.Gammars;
@@ -23,6 +21,35 @@ namespace EnvironmentCreator
     /// </summary>
     public static class GameStatData
     {
+        /// <summary>
+        /// Storage of all functions. Storage consist of predefined functions and functions that was added during simulation run.
+        /// </summary>
+        /// <exception cref="FunctionNotSupportedExcp">Throws this error, when function cannot be found in <see cref="GameStatData.m_functions"/>.</exception>
+        private static Dictionary<string, Function> m_functions;
+        /// <summary>
+        /// Method search for function by it's name and returns pointer to this function.
+        /// If function was not found, then null is returned. Use this method when you accessing function and you have it's name.
+        /// </summary>
+        /// <param name="fnName">name of function.</param>
+        /// <param name="paramPos">String array have on i-th position name of i-th parameter of this function.</param>
+        /// <returns> Function to asociated with <paramref name="fnName"/>. Null if no function is associated.</returns>
+        public static Function GetFunction(string fnName,string[] paramPos)
+        {
+            if (m_functions.ContainsKey(fnName))
+                return m_functions[fnName].FnCopy(paramPos);
+            else
+                return null;
+        }
+        /// <summary>
+        /// Method adds function to storage of functions useable by <see cref="Action"/>s in simulation.
+        /// </summary>
+        /// <param name="function"> Function to be added to pool of useable functions.</param>
+        public static void AddFunction(Function function)
+        {
+            if (function != null)
+                if (!m_functions.ContainsKey(function.GetFnName()))
+                    m_functions.Add(function.GetFnName(), function);
+        }
         /// <summary>
         /// Enumeration representing all compare operators used in <see cref="BinaryOp"/>.
         /// </summary>
@@ -126,9 +153,13 @@ namespace EnvironmentCreator
             BOOL,
             /// <summary>
             /// There is some uncertainty and node can return both integer or boolean.
-            /// This might be due to same name of variable in parent and child node.
+            /// This might be due to same name of variable in parent and child node one as boolean type and another tme as integer.
             /// </summary>
-            INT_BOOL
+            INT_BOOL,
+            /// <summary>
+            /// Parameter is not boolean or integer variable, but whole <see cref="Instance"/>.
+            /// </summary>
+            INSTANCE
         }
         /// <summary>
         /// Structure storing comparison operators in pair of its string representation and corresponding <see cref="BoolOperators"/>.
@@ -146,6 +177,10 @@ namespace EnvironmentCreator
         /// ANTLR grammar visitor, which return type is integer but its value is not used for any purpose.
         /// </summary>
         public static GStrat_VIS_int m_int_VIS;
+        /// <summary>
+        /// Static definition for close range of two objects.
+        /// </summary>
+        public static float close_range;
         /// <summary>
         /// Method determining name of currently executed method.
         /// Of course before call of this method.
@@ -167,6 +202,11 @@ namespace EnvironmentCreator
         /// </summary>
         static GameStatData()
         {
+            close_range = 30.0f;
+
+            m_functions = new Dictionary<string, Function>();
+            GameStatData.AddFunction(new Close_Range());
+
             m_returnType_VIS = new GStrat_VIS_ReturnType();
             m_assignNode_VIS = new GStrat_VIS_EvalNode();
             m_int_VIS = new GStrat_VIS_int();

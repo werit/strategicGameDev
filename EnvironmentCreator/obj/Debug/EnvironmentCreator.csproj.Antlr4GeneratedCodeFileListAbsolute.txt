@@ -4,9 +4,3 @@ C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\Environmen
 C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\GStratBaseListener.cs
 C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\GStratVisitor.cs
 C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\GStratBaseVisitor.cs
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorLexer.cs
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorParser.cs
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorListener.cs
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorBaseListener.cs
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorVisitor.cs
-C:\Users\msi\Documents\Visual Studio 2012\Projects\EnvironmentCreator\EnvironmentCreator\obj\Debug\CalculatorBaseVisitor.cs

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -205,7 +204,7 @@ namespace EnvironmentCreator
         /// <returns></returns>
         protected int result(Dictionary<string, string> mapParam, GameStatData.AritmeticOperators op)
         {
-            Debug.Assert(m_lNode != null && m_rNode != null &&
+            System.Diagnostics.Debug.Assert(m_lNode != null && m_rNode != null &&
                 isReturnTypeOfBothInt(m_lNode, m_rNode, mapParam));
             int lRetVal;
             int rRetVal;
@@ -333,11 +332,29 @@ namespace EnvironmentCreator
         /// <returns>Method returns one of <see cref="GameStatData.NodeReturnType"/> depending on stored variable type.</returns>
         public override GameStatData.NodeReturnType ReturnType(Dictionary<string, string> mapParam)
         {
-            if(!mapParam.ContainsKey(this.m_instance_id)){
-                // throw some error
+            if (!isInstanceNode())
+            {
+                if (((mapParam.ContainsKey(this.m_id)
+                && GroundingParams.m_instances.ContainsKey(mapParam[this.m_id]))
+                || GroundingParams.m_instances.ContainsKey(this.m_id)))
+                    return GameStatData.NodeReturnType.INSTANCE;
+                if (this.m_id.ToLower() == "true" || this.m_id.ToLower() == "false")
+                    return GameStatData.NodeReturnType.BOOL;
+                throw new UnknownReturnType(this.m_id);
+            }
+
+            if (!((mapParam.ContainsKey(this.m_instance_id)
+                && GroundingParams.m_instances.ContainsKey(mapParam[this.m_instance_id]))
+                || GroundingParams.m_instances.ContainsKey(this.m_instance_id)))
+            {
+                throw new UnknownInstanceExc(this.m_instance_id);
             }
             // actual name of instance
-            string translation = mapParam[this.m_instance_id];
+            string translation;
+            if (mapParam.ContainsKey(this.m_instance_id))
+                translation = mapParam[this.m_instance_id];
+            else
+                translation = this.m_instance_id;
             if (GroundingParams.m_InstanceBoolVar.ContainsKey(translation) && GroundingParams.m_InstanceBoolVar[translation].ContainsKey(m_id) 
                 &&
                 GroundingParams.m_InstanceIntegerVar.ContainsKey(translation) && GroundingParams.m_InstanceIntegerVar[translation].ContainsKey(m_id))
@@ -374,6 +391,16 @@ namespace EnvironmentCreator
             this.m_instance_id = instance;
         }
         /// <summary>
+        /// Constructor creates class with no <see cref="Instance"/> name.
+        /// Therefore it can be some constant like 'true' or 'false'.
+        /// </summary>
+        /// <param name="param">Name of constant associated with no <see cref="Instance"/>.</param>
+        public IDNode(string param)
+        {
+            this.m_id = param;
+            this.m_instance_id = null;
+        }
+        /// <summary>
         /// Method redefines ancestor method.\n
         /// Method takes string format of <see cref="Instance"/> name and concatenate it with stored name of variable.
         /// </summary>
@@ -398,10 +425,84 @@ namespace EnvironmentCreator
             else
                 return true;
         }
+        /// <summary>
+        /// Method redefines parent evaluation method.
+        /// Use this method when <see cref="GameStatData.NodeReturnType"/> is BOOL.
+        /// Method return value in this node.
+        /// </summary>
+        /// <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        /// <param name="returnVal">Boolean value of node, if <see cref="GameStatData.NodeReturnType"/> == BOOL.
+        /// Error otherwise.</param>
+        public override void evalNode(Dictionary<string, string> mapParam, out bool returnVal)
+        {
+            System.Diagnostics.Debug.Assert(this.m_id != null);
+            if (this.m_instance_id == null)
+            {
+                if (this.m_id.ToLower() == "true")
+                { returnVal = true; return; }
+                if (this.m_id.ToLower() == "false")
+                { returnVal = false; return; }
+                throw new UnknownParameterExc(this.m_id);
+            }
+            if (!( (mapParam.ContainsKey(this.m_instance_id)
+                && GroundingParams.m_instances.ContainsKey(mapParam[this.m_instance_id]))
+                || GroundingParams.m_instances.ContainsKey(this.m_instance_id )))
+            {
+                throw new UnknownInstanceExc(this.m_instance_id);
+            }
+
+            // actual name of instance
+            string translation;
+            if (mapParam.ContainsKey(this.m_instance_id))
+                translation = mapParam[this.m_instance_id];
+            else
+                translation = this.m_instance_id;
+
+            if (GroundingParams.m_InstanceBoolVar.ContainsKey(translation) &&
+                GroundingParams.m_InstanceBoolVar[translation].ContainsKey(this.m_id))
+            {
+                returnVal = GroundingParams.m_InstanceBoolVar[translation][this.m_id];
+                return;
+            }
+            throw new UnknownParameterExc(this.m_id);
+
+        }
+        /// <summary>
+        /// Method redefines parent evaluation method.
+        /// Use this method when <see cref="GameStatData.NodeReturnType"/> is INT.
+        /// Method return value in this node.
+        /// </summary>
+        /// <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
+        /// <param name="returnVal">Boolean value of node, if <see cref="GameStatData.NodeReturnType"/> == INT.
+        /// Error otherwise.</param>
+        public override void evalNode(Dictionary<string, string> mapParam, out int returnVal)
+        {
+            if (!((mapParam.ContainsKey(this.m_instance_id)
+                && GroundingParams.m_instances.ContainsKey(mapParam[this.m_instance_id]))
+                || GroundingParams.m_instances.ContainsKey(this.m_instance_id)))
+            {
+                throw new UnknownInstanceExc(this.m_instance_id);
+            }
+
+            // actual name of instance
+            string translation;
+            if (mapParam.ContainsKey(this.m_instance_id))
+                translation = mapParam[this.m_instance_id];
+            else
+                translation = this.m_instance_id;
+
+            if (GroundingParams.m_InstanceIntegerVar.ContainsKey(translation) &&
+                GroundingParams.m_InstanceIntegerVar[translation].ContainsKey(this.m_id))
+            {
+                returnVal = GroundingParams.m_InstanceIntegerVar[translation][this.m_id];
+                return;
+            }
+            throw new UnknownParameterExc(this.m_id);
+        }
     }
     /// <summary>
     /// Class encapsulating evaluation of copmare operation of binary node.<see cref="BinaryOp"/>\n
-    /// Supported compare operations are ==,!=,<,>,<=,>=.\n
+    /// Supported compare operations are ==,!=,&lt;,&gt;,&lt;=,&gt;=.\n
     /// Class redefines <see cref="BinaryMathOp.ReturnType"/> to boolean value.
     /// </summary>
     public abstract class BinaryCompareOp : BinaryOp
@@ -420,54 +521,17 @@ namespace EnvironmentCreator
     /// <summary>
     /// Class redefines evaluation of determining equality of two nodes storing return value from <see cref="BinaryMathOp.ReturnType"/>.\n
     /// </summary>
-    public class EqualNode : BinaryCompareOp
+    public class EqualNode : NotEqualNode
     {
         /// <summary>
         /// Method redefining ancestor method, which returns boolean value depending on equality of children nodes.
         /// </summary>
         /// <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
         /// <param name="returnVal">Boolean value of node between equality operation of left and right children nodes.</param>
-        public override void evalNode(Dictionary<string, string> mapParam,out bool returnVal)
+        public override void evalNode(Dictionary<string, string> mapParam, out bool returnVal)
         {
-            if (!isReturnTypeSame(m_lNode,m_rNode,mapParam))
-                throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.BoolOperators.EQUAL);
-            bool lRetVal;
-            bool rRetVal;
-            int lRetVal_int;
-            int rRetVal_int;
-            switch (m_lNode.ReturnType(mapParam))
-            {
-                case GameStatData.NodeReturnType.BOOL:
-                    m_lNode.evalNode(mapParam,out lRetVal);
-                    m_rNode.evalNode(mapParam,out rRetVal);
-                    returnVal = lRetVal == rRetVal;
-                    break;
-                case GameStatData.NodeReturnType.INT:
-                    m_lNode.evalNode(mapParam,out lRetVal_int);
-                    m_rNode.evalNode(mapParam,out rRetVal_int);
-                    returnVal = lRetVal_int == rRetVal_int;
-                    break;
-                case GameStatData.NodeReturnType.INT_BOOL:
-                    if (m_rNode.ReturnType(mapParam) == GameStatData.NodeReturnType.INT)
-                    {
-                        m_lNode.evalNode(mapParam,out lRetVal_int);
-                        m_rNode.evalNode(mapParam,out rRetVal_int);
-                        returnVal = lRetVal_int == rRetVal_int;
-                    }
-                    else
-                        if (m_rNode.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)
-                        {
-                            m_lNode.evalNode(mapParam,out lRetVal);
-                            m_rNode.evalNode(mapParam,out rRetVal);
-                            returnVal = lRetVal == rRetVal;
-                        }
-                        else
-                            throw new CannotChooseVariableTypeExc(m_lNode.ToString());
-                    break;
-                default:
-                    throw new UnxpectedParamTypeExc(m_lNode.ReturnType(mapParam), GameStatData.NodeReturnType.INT, GameStatData.BoolOperators.EQUAL);
-            }
-
+            base.evalNode(mapParam, out returnVal);
+            returnVal = !returnVal;
         }
     }
     /// <summary>
@@ -480,10 +544,10 @@ namespace EnvironmentCreator
         /// </summary>
         /// <param name="mapParam">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
         /// <param name="returnVal">Boolean value of node between unequality operation of left and right children nodes.</param>
-        public override void evalNode(Dictionary<string, string> mapParam,out bool returnVal)
+        public override void evalNode(Dictionary<string, string> mapParam, out bool returnVal)
         {
-            if (!isReturnTypeSame(m_lNode, m_rNode,mapParam))
-                throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam),  GameStatData.BoolOperators.NOT_EQUAL);
+            if (!isReturnTypeSame(m_lNode, m_rNode, mapParam))
+                throw new UnxpectedParamTypeExc(m_rNode.ReturnType(mapParam), m_lNode.ReturnType(mapParam), GameStatData.BoolOperators.NOT_EQUAL);
             bool lRetVal;
             bool rRetVal;
             int lRetVal_int;
@@ -491,27 +555,37 @@ namespace EnvironmentCreator
             switch (m_lNode.ReturnType(mapParam))
             {
                 case GameStatData.NodeReturnType.BOOL:
-                    m_lNode.evalNode(mapParam,out lRetVal);
-                    m_rNode.evalNode(mapParam,out rRetVal);
+                    m_lNode.evalNode(mapParam, out lRetVal);
+                    m_rNode.evalNode(mapParam, out rRetVal);
                     returnVal = lRetVal != rRetVal;
                     break;
                 case GameStatData.NodeReturnType.INT:
-                    m_lNode.evalNode(mapParam,out lRetVal_int);
-                    m_rNode.evalNode(mapParam,out rRetVal_int);
+                    m_lNode.evalNode(mapParam, out lRetVal_int);
+                    m_rNode.evalNode(mapParam, out rRetVal_int);
                     returnVal = lRetVal_int != rRetVal_int;
+                    break;
+                case GameStatData.NodeReturnType.INSTANCE:
+                    string right, left;
+                    if (mapParam.ContainsKey(m_lNode.ToString()))
+                        left = mapParam[m_lNode.ToString()];
+                    else left = m_lNode.ToString();
+                    if (mapParam.ContainsKey(m_rNode.ToString()))
+                        right = mapParam[m_rNode.ToString()];
+                    else right = m_rNode.ToString();
+                    returnVal = left != right;
                     break;
                 case GameStatData.NodeReturnType.INT_BOOL:
                     if (m_rNode.ReturnType(mapParam) == GameStatData.NodeReturnType.INT)
                     {
-                        m_lNode.evalNode(mapParam,out lRetVal_int);
-                        m_rNode.evalNode(mapParam,out rRetVal_int);
+                        m_lNode.evalNode(mapParam, out lRetVal_int);
+                        m_rNode.evalNode(mapParam, out rRetVal_int);
                         returnVal = lRetVal_int != rRetVal_int;
                     }
                     else
                         if (m_rNode.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)
                         {
-                            m_lNode.evalNode(mapParam,out lRetVal);
-                            m_rNode.evalNode(mapParam,out rRetVal);
+                            m_lNode.evalNode(mapParam, out lRetVal);
+                            m_rNode.evalNode(mapParam, out rRetVal);
                             returnVal = lRetVal != rRetVal;
                         }
                         else
@@ -656,10 +730,10 @@ namespace EnvironmentCreator
         /// <param name="op">Operation whish is performed during assigning.</param>
         public void assignVl(int value, Dictionary<string, string> mapParam, GameStatData.AssignOperators op)
         {
-            //test    PREROB NA FUNKCIU
             // id node is guaranted by grammar
             if (!m_lNode.isInstanceNode())
             { //throw some exception
+                throw new UnknownInstanceExc(m_lNode.ToString());
             }
             // split name to instance name and variable name
             string[] wrds = m_lNode.ToString().Split('.');
@@ -667,14 +741,14 @@ namespace EnvironmentCreator
             // get instance name from map
             if (!mapParam.TryGetValue(wrds[0], out trgInstance))
             {
-                // throw some error not existing instance for mapping
+                trgInstance = wrds[0]; // presume wrds[0] contain name of instance
             }
             if (GroundingParams.m_InstanceIntegerVar.ContainsKey(trgInstance))
             {
 
                 if (!GroundingParams.m_InstanceIntegerVar[trgInstance].ContainsKey(wrds[1]))
                 {
-                    // throw some error not existing variable of instance
+                    throw new UnknownParameterExc(wrds[1]);
                 }
                 switch (op)
                 {
@@ -702,7 +776,7 @@ namespace EnvironmentCreator
             }
             else
             {
-                // throw some error not existing container of variables for instance
+                throw new UnknownInstanceExc(wrds[0]);
             }
             //test
         }
@@ -725,7 +799,7 @@ namespace EnvironmentCreator
             // get instance name from map
             if (!mapParam.TryGetValue(wrds[0], out trgInstance))
             {
-                // throw some error not existing instance for mapping
+                trgInstance = wrds[0]; // presume wrds[0] contain name of instance
             }
             if (GroundingParams.m_InstanceBoolVar.ContainsKey(trgInstance))
             {
@@ -764,29 +838,23 @@ namespace EnvironmentCreator
             {
                 case GameStatData.NodeReturnType.BOOL:
                     m_rNode.evalNode(mapParam,out rRetVal);
-                    //test    PREROB NA FUNKCIU
                     assignVl(rRetVal, mapParam);
-                    //test
-                    //GroundingParams.m_InstanceBoolVar[m_lNode.ToString()] = rRetVal;
                     break;
                 case GameStatData.NodeReturnType.INT:
                     m_rNode.evalNode(mapParam,out rRetVal_int);
                     assignVl(rRetVal_int, mapParam,GameStatData.AssignOperators.ASSIGN);
-                    //GroundingParams.m_InstanceIntegerVar[m_lNode.ToString()] = rRetVal_int;
                     break;
                 case GameStatData.NodeReturnType.INT_BOOL:
                     if (m_rNode.ReturnType(mapParam) == GameStatData.NodeReturnType.INT)
                     {
                         m_rNode.evalNode(mapParam,out rRetVal_int);
                         assignVl(rRetVal_int, mapParam, GameStatData.AssignOperators.ASSIGN);
-                        //GroundingParams.m_InstanceIntegerVar[m_lNode.ToString()] = rRetVal_int;
                     }
                     else
                         if (m_rNode.ReturnType(mapParam) == GameStatData.NodeReturnType.BOOL)
                         {
                             m_rNode.evalNode(mapParam,out rRetVal);
                             assignVl(rRetVal, mapParam);
-                            //GroundingParams.m_InstanceBoolVar[m_lNode.ToString()] = rRetVal;
                         }
                         else
                             throw new CannotChooseVariableTypeExc(m_lNode.ToString());
@@ -973,25 +1041,4 @@ namespace EnvironmentCreator
             return GameStatData.NodeReturnType.INT;
         }
     }
-    /**
-     * Class encapsulation function for evaluation purpouses.
-     * TODO
-     */
-    //public class FnNode : EvaluationNode
-    //{
-    //    // function to be evaluated
-    //    //private Function m_function;
-    //    public override void evalNode(Dictionary<string, string> mapParam)
-    //    {
-    //        base.evalNode(mapParam);
-    //    }
-    //    public override void evalNode(Dictionary<string, string> mapParam, out bool returnVal)
-    //    {
-    //        base.evalNode(mapParam, out returnVal);
-    //    }
-    //    public override bool isInstanceNode()
-    //    {
-    //        return false;
-    //    }
-    //}
 }

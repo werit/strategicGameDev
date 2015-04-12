@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace EnvironmentCreator
 {
@@ -21,7 +21,7 @@ namespace EnvironmentCreator
         /// <summary>
         /// Time left to execution of end effects of <see cref="Action"/>.
         /// </summary>
-        private int m_waitDuration;
+        private double m_waitDuration;
         /// <summary>
         /// <see cref="Action"/> which end effects are about to be executed.
         /// </summary>
@@ -56,8 +56,8 @@ namespace EnvironmentCreator
         /// When duration between <see cref="Action"/>'s effects reach 0, then method starts end effects.
         /// Method sjould be called in every update of game engine.
         /// </summary>
-        /// <param name="delta">Time passed in engine.</param>
-        public void NextIteration(int delta)
+        /// <param name="delta">Time passed in engine. In seconds</param>
+        public void NextIteration(double delta)
         {
             this.m_waitDuration -= delta;
             if (this.m_waitDuration < 0)
@@ -68,7 +68,7 @@ namespace EnvironmentCreator
         /// </summary>
         /// <returns>When method return's number greater then 0, end effects wait. There fore they are not executed.\n
         /// When 0 or less is returned. End effects were executed.</returns>
-        public int GetLeftDur()
+        public double GetLeftDur()
         {
             return this.m_waitDuration;
         }

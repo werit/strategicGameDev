@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EnvironmentCreator
 {
@@ -47,8 +46,7 @@ namespace EnvironmentCreator
         /// </summary>
         private Dictionary<string, string> m_typeParamLink;
         /// <summary>
-        /// Key is action's parameter's name.
-        /// Value is action's parameter's position.
+        /// On index 'i' is name of parameter at i-th position. 
         /// </summary>
         private string[] m_paramPos;
         /// <summary>
@@ -124,11 +122,11 @@ namespace EnvironmentCreator
         /// </summary>
         /// <param name="ns">Dictionary characterizing couple consisting of name of parameter and instance name attributable to that parameter.</param>
         /// <returns>Time in miliseconds between effects of this action with current <paramref name="ns"/>.</returns>
-        public int GetDuration(Dictionary<string, string> ns)
+        public double GetDuration(Dictionary<string, string> ns)
         {
             int result;
             m_duration.evalNode(ns, out result);
-            return result;
+            return (double)((double)result / 1000d);
             
         }
         /// <summary>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace EnvironmentCreator.Gammars
 {
@@ -21,7 +21,7 @@ namespace EnvironmentCreator.Gammars
         /// <summary>
         /// Method processing visiting of end effect of action.
         /// Start and end effects are the same, therefore this method pass processing to method which handles effect.\n
-        /// <see cref="GStrat_VIS_EvalNode.VisitAssignExpr"/> or <see cref="GStrat_VIS_EvalNode.VisistCallFn"/>.
+        /// <see cref="GStrat_VIS_EvalNode.VisitAssignExpr"/> or <see cref="GStrat_VIS_EvalNode.VisitCallFn"/>.
         /// </summary>
         /// <param name="context">Parameter of parser context of currently processed tree part.</param>
         /// <returns>Node which represents one end effect.</returns>
@@ -67,6 +67,17 @@ namespace EnvironmentCreator.Gammars
             return thisNode;
         }
         /// <summary>
+        /// Method processing visiting of effect function of <see cref="Action"/>.
+        /// Method returns node which represents function, which after evaluation returns integer.
+        /// This function is way to affect game simulation when grammar cannot fulfill this task.
+        /// </summary>
+        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
+        /// <returns>Integer.</returns>
+        public override EvaluationNode VisitCallFn(GStratParser.CallFnContext context)
+        {
+            return Visit(context.functionCall());
+        }
+        /// <summary>
         /// Method processing visiting of precondition function of action.
         /// Method returns node which represents function, which after evaluation returns boolean.
         /// </summary>
@@ -74,7 +85,26 @@ namespace EnvironmentCreator.Gammars
         /// <returns>Node which represents one precondition function call.</returns>
         public override EvaluationNode VisitCallFnPrecond(GStratParser.CallFnPrecondContext context)
         {
-            return base.VisitCallFnPrecond(context);
+            return Visit(context.functionCall());
+        }
+        /// <summary>
+        /// Method processing grammar rule matching 'FunctionCall'.
+        /// Method during its process takes reference to <see cref="Function"/> class.
+        /// </summary>
+        /// <param name="context">Parameter of parser context of currently processed tree part.</param>
+        /// <returns>Evaluation node representing function.</returns>
+        public override EvaluationNode VisitFunctionCall(GStratParser.FunctionCallContext context)
+        {
+            string[] paramPos= new string[context.NAME().Count()-1];
+            for (int i = 1; i < context.NAME().Count(); i++)
+			{
+			 paramPos[i-1] = context.NAME(i).GetText();
+			}
+            Function fn = GameStatData.GetFunction(context.NAME(0).GetText(),paramPos);
+            if (fn!= null)
+                return fn;
+            else
+                throw new FunctionNotSupportedExcp(context.NAME(0).GetText());
         }
         /// <summary>
         /// Method process visiting addition or subtraction in expression of action.
@@ -131,11 +161,10 @@ namespace EnvironmentCreator.Gammars
         /// <returns>Method returns <see cref="IDNode"/> with stored identifier.</returns>
         public override EvaluationNode VisitId(GStratParser.IdContext context)
         {
-            //if (context.NAME().Count > 1)
-            //    return new IDNode(context.NAME(0).GetText(), context.NAME(1).GetText());
-            //else
-            //    return new IDNode(context.NAME(0).GetText());
-            return new IDNode(context.NAME(0).GetText(), context.NAME(1).GetText());
+            if (context.NAME().Count() > 1)
+                return new IDNode(context.NAME(0).GetText(), context.NAME(1).GetText());
+            else
+                return new IDNode(context.NAME(0).GetText());
         }
         /// <summary>
         /// Method process visiting 'ident' rule of grammar.\n

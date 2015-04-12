@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace EnvironmentCreator
 {
@@ -77,6 +77,15 @@ namespace EnvironmentCreator
         /// <summary>
         /// Add instance passed as parameter to list of instances.
         /// </summary>
+        /// <param name="newInstance">New <see cref="Instance"/> to be added as instance of this type.</param>
+        public void AddInst(Instance newInstance)
+        {
+            this.m_typeInstances.Add(newInstance);
+        }
+        /// <summary>
+        /// Add instance passed as parameter to list of instances.
+        /// </summary>
+        /// <param name="newInstances">New <see cref="Instance"/> to be added as instance of this type.</param>
         public void AddInst(Instance[] newInstances)
         {
             this.m_typeInstances.AddRange(newInstances);
@@ -90,7 +99,7 @@ namespace EnvironmentCreator
         /// </summary>
         static Types()
         {
-            m_defaultAncestor = new Types("defaultAncestor");
+            m_defaultAncestor = new Types();
             m_defaultAncestor.m_ancestor = null;
             m_nonameCnt = 0;
         }
@@ -103,7 +112,8 @@ namespace EnvironmentCreator
             m_intVariables = new List<string>();
             m_boolVariables = new List<string>();
             m_ancestor = Types.m_defaultAncestor;
-            Types.m_defaultAncestor.AddDesc(this);
+            if (m_defaultAncestor != null) // first addition will be during creation of default ancestor
+                Types.m_defaultAncestor.AddDesc(this);
         }
         /// <summary>
         /// Constructor inicialize array for names of integer and boolean variables of <see cref="Types"/>.\n
@@ -127,8 +137,6 @@ namespace EnvironmentCreator
                 this.m_ancestor = ancestor;
                 this.m_ancestor.AddDesc(this);
             }
-            this.m_ancestor.AddDesc(this);
-            m_ancestor = ancestor != null ? ancestor : Types.m_defaultAncestor;
             m_intVariables = intVariables != null ? intVariables : new List<string>();
             m_boolVariables = boolVariables != null ? boolVariables : new List<string>();
         }

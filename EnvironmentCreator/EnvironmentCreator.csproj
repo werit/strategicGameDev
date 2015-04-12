@@ -10,20 +10,20 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EnvironmentCreator</RootNamespace>
     <AssemblyName>EnvironmentCreator</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>
-    </DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\EnvironmentCreator.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,16 +34,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.v4.5">
-      <HintPath>..\packages\Antlr4.Runtime.4.2.2-alpha001\lib\net45\Antlr4.Runtime.v4.5.dll</HintPath>
+    <Reference Include="Antlr4.Runtime.v3.5">
+      <HintPath>..\packages\Antlr4.Runtime.4.2.2-alpha001\lib\net35\Antlr4.Runtime.v3.5.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEditor">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Unity\Editor\Data\Managed\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
@@ -57,22 +62,12 @@
     <Compile Include="Types.cs" />
     <Compile Include="EvaluationNode.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="Factory.cs" />
     <Compile Include="GameStatData.cs" />
-    <Compile Include="Grammars\CalculatorVisitor.cs" />
     <Compile Include="Grammars\GStrat_VIS_int.cs" />
-    <Compile Include="Grammars\tmpListener.cs" />
-    <Compile Include="GrammarInpStorage.cs" />
     <Compile Include="GroundingParams.cs" />
-    <Compile Include="IGramChoice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="..\..\..\..\..\..\..\ANTLR\Grammars\Calculator.g4">
-      <Link>Gammars\Calculator.g4</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>EnvironmentCreator.Gammars</CustomToolNamespace>
-    </Antlr4>
     <Antlr4 Include="..\..\..\..\..\..\..\ANTLR\Grammars\GStrat.g4">
       <Link>Gammars\GStrat.g4</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -92,6 +87,9 @@
     <Error Condition="!Exists('..\packages\Antlr4.4.2.2-alpha001\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.2.2-alpha001\build\Antlr4.targets'))" />
   </Target>
   <Import Project="..\packages\Antlr4.4.2.2-alpha001\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.2.2-alpha001\build\Antlr4.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(ProjectDir)bin\Debug\EnvironmentCreator.dll" "C:\Users\msi\Documents\UnityProjects\RTSGame\Assets\RST\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
